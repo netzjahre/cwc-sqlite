@@ -6,7 +6,7 @@ with changes against the original:
 more flexible options for showing and deleting entries.
 Purpose of the changes:
 You can view the bots before deleting them,
-you can decide which are wanted and which are unwanted site visits.
+you can decide which are wanted site visits and which are unwanted site visits.
 You can delete unwanted visits from the counter and keep hhe wanted visits.
 
 Derived from netzjahre/cwc is this cwc-sqlite.
