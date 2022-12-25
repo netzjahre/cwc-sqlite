@@ -14,7 +14,7 @@ Modified by JF
 
 <?php
 error_reporting(E_ALL);
-require "config.inc.php");
+require "config.inc.php";
 require "language.inc.php";
 	
 // Get the client ip address
