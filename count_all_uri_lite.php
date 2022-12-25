@@ -51,10 +51,10 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 				echo "</div>";
 				echo "<center><table cellpadding='5' style='border-spacing:5px'>";
 				echo "<tr style='background-color:#a2a5a7;text-align: left;'>
-					<th>Number</th>
-					<th>URL</th>
-					<th>Count</th>
-					</tr>";
+					  <th>Number</th>
+					  <th>URL</th>
+					  <th>Count</th>
+					  </tr>";
 				//open the database////////////////////////////
 				$db = new PDO("sqlite:$dbname1");
 				$db->exec("PRAGMA journal_mode = WAL;");
@@ -72,7 +72,7 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 							print_r($sql->errorInfo()); // if any error is there it will be posted
 							$msg=" Database problem, please contact site admin ";
 							}
-				$result = $db->query("SELECT *, COUNT(request_uri) as 'sum' FROM $tablename1[$sid] GROUP BY http_host,request_uri ORDER BY sum DESC");
+				$result = $db->query("SELECT http_host, request_uri, COUNT(request_uri) as 'sum' FROM $tablename1[$sid] GROUP BY http_host,request_uri ORDER BY sum DESC");
 				$i=1;
 				$countt=0;
 				$iminus=0;
@@ -87,9 +87,11 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 					$request_uri = $row[request_uri];
 					$request_uri = htmlentities($request_uri,ENT_QUOTES);
 					$sum = $row[sum];
-					//$stile="style= 'background-color: #779BAB;'";
-					if ((((intval($sum))%2)==0)) {$stile="style= 'background-color: #cecece;'";} //Change background
-					if ((((intval($sum))%2)>0)) {$stile="style= 'background-color: #779BAB;'";} //Change background
+					$count[$i]=$sum;
+					if (((((intval($sum))%2)==0))){$stile="style= 'background-color: #cecece;'";} //Change background
+					if (((((intval($sum))%2)==0)) && (((intval($sum))%3)==0)){$stile="style= 'background-color: #F2F2F2;'";} //Change background
+					if (((((intval($sum))%2)>0))){$stile="style= 'background-color: #779BAB;'";} //Change background
+					if (((((intval($sum))%3)==0))  && (((intval($sum))%2)!=0)) {$stile="style= 'background-color: #F2F5A9;'";} //Change background
 					echo "<tr $stile><td align='right'>$i</td>";
 					echo "<td>$http_host$request_uri</td><td align='right'>$sum</td></tr>";
 					$i++;
