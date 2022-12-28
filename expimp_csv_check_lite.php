@@ -1,4 +1,4 @@
-<?php
+ <?php
 error_reporting(E_ALL);
 require "config.inc.php";
 //get site id for <TITLE> & dump page, preventing injection
@@ -63,6 +63,8 @@ require "language.inc.php";
 						fputs($handle, $uniquezeile."\r\n");
 						}
 					fclose($handle);
+					fclose($csvfile);
+					$csvfile = fopen('file.csv', 'w');
 					fclose($csvfile);
 				$db = NULL;
 			}
