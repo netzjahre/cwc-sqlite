@@ -23,10 +23,7 @@ include "./config.inc.php";
 	<body>
 	<h1>Cookieless Web Counter <span style="font-size: 15px; font-style: italic"></span></h1>
 	Original (v. 20150324) by <a href = "https://github.com/luciomarinelli/cwc"> Lucio Marinelli</a>, modified by JF to meet own requirements
-		<h1>Import csv archive <span style="font-size: 15px; font-style: italic">
-				<a href="https://stackoverflow.com/" style="text-decoration: none; color: black">with help of stackoverflow.com</a>
-			</span>
-		</h1>
+		<h2>Import to csv archive <span style="font-size: 15px; font-style: italic"></span></h2>
 <br/>&nbsp;
 <br/>&nbsp;
 
@@ -64,23 +61,28 @@ include "./language.inc.php";
 $stmt = $db->query ("CREATE TABLE IF NOT EXISTS $tablename1[$sid](http_host,request_uri)");
 $stmt->execute();
 
+$numrows = 0;
 //wiki.hennweb.de/doku.php?id=programmieren:sqlite3:allgemein#csv_import
 $stmt = $db -> prepare("INSERT INTO $tablename1[$sid](http_host,request_uri) VALUES(?,?)");
     $handle = fopen("exp.csv", "r");
             while (($data = fgetcsv($handle,","))!== FALSE) {
+				$numrows += 1;
 				$http_host = $data[0];
 				$request_uri = $data[1];
 				$stmt = $db -> exec("INSERT INTO $tablename1[$sid] VALUES('$data[0]','$data[1]')");
-				echo $data[0]$data[1]."<br />";
+				echo "<br />";
+				echo $numrows."-".$data[0].$data[1]."<br />";
 				}
-fclose ($handle);
-
-$db=null;
-
-			echo "<div class='flex-container'>";
-			echo "csv import successfull";
-			echo "</div>";
+	fclose ($handle);
+	$handle = fopen("exp.csv", "w");
+	fclose ($handle);
 	
+
+
+	echo "<div class='flex-container'>";
+	echo "csv import to archive successfull";
+	echo "</div>";
+$db=null;
 	
 	echo '</div>';//Ende wrapper
 	
@@ -91,16 +93,12 @@ $db=null;
 			echo "<div class='flex-container'>";
 			echo "<div><a href='cwclite.php'>$back</a></div>";
 			echo "</div>";
-			echo "<div class='flex-container'><a href='count_all_uri_lite.php'>Show archive</a></div>";
-//unset all variables/////////////////////////////////////////////////////////////////////////////
-$keys = array();
-foreach($GLOBALS as $k => $v){
-	$keys[] = $k;
-}
-for($t=1;$keys[$t];$t++){
-	unset($$keys[$t]);
-}
-unset($k); unset($v); unset($t);
+			echo "<div class='flex-container'>";
+			echo "<div><a href='count_all_uri_lite.php'>Show archive</a></div>";
+			echo "</div>";
+			echo "<div class='flex-container'>";
+			echo "<div>To remember, write the date of your first import into your calender.</div>";
+			echo "</div>";			
 ?>
 </body>
 </html>
