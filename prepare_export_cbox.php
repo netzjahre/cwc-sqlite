@@ -84,8 +84,9 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		//open the database
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = WAL;");
-		$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
+		$db->exec("PRAGMA journal_mode = TRUNCATE;");
+		#$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
+		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), remote_addr");
 
 		$i=1;
 		$countt=0;
@@ -148,7 +149,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[6]</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[7]</td>";
 			
-			echo "<td><input type='checkbox' name='cbox[$row[0]]'/></td>";/////////////////////////////////////////
+			echo "<td style='background-color:#f0e68c'><input type='checkbox' name='cbox[$row[0]]'/></td>";/////////////////////////////////////////
 			//echo "<td>".$i."</td>";
 			$countt= $i - $iminus;
 			#echo "<td>".$countt."</td></tr>";
