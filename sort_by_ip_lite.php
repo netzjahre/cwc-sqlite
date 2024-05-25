@@ -163,7 +163,7 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 			$btime = intval(substr($timestamp,8,2));
 		} // end foreach($result as $row)
 		// close the database connection
-		$db->exec("DROP INDEX idx_date_ip");
+		//$db->exec("DROP INDEX idx_date_ip");
 		$db = NULL;
 	echo "</table>";
 ///////////////////////////////////////////////////////////////////////////////

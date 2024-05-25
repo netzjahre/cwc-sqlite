@@ -168,7 +168,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		} // end foreach($result as $row)
 		// close the database connection
-		$db->exec("DROP INDEX idx_date_host_uri");
+		//$db->exec("DROP INDEX idx_date_host_uri");
 		$db = NULL;
 	echo "</table>";
 ///////////////////////////////////////////////////////////////////////////////
