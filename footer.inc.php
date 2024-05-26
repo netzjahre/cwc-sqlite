@@ -223,6 +223,12 @@ echo "</form>";
 echo "</div>";
 echo "</div>";
 
+echo "<div>";
+echo "<form action = 'delete_referrer_exact_lite.php' method = 'POST'>";
+echo "<p align='center'>or insert left-aligned a part of   <input type='text' name='referrer' value='exact Referrer text' maxlength='50' size='20'> and <input type='submit' name='referrubber' value='delete rows'></p>";
+//echo " and <input type='submit' name='referrubber' value='delete rows'></p>";
+echo "</form>";
+
 //echo "<div style='border:solid black 5px'>";
 echo "<div>";
 echo "<form action = 'delete_useragent_lite.php' method = 'POST'>";
