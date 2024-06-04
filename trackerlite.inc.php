@@ -25,6 +25,7 @@ $http_user_agent=$_SERVER['HTTP_USER_AGENT'];
 //
 //SQLite
 $db = new SQLite3("/usr/www/users/netzjap/cwc-lite/cwcsqlite.db");
+$db->exec("PRAGMA synchronous = NORMAL;");
 $db->exec("PRAGMA journal_mode = TRUNCATE;");
 //$id = htmlentities($id,ENT_QUOTES);
 //$timestamp = htmlentities($timestamp,ENT_QUOTES);

@@ -19,10 +19,8 @@ require "language.inc.php";
 	
 // Get the client ip address
 $ipaddress = $_SERVER['REMOTE_ADDR'];
-$ipaddress = stripslashes($_SERVER['REMOTE_ADDR']);
-#$addr = inet_pton($ipaddress);
+#$ipaddress = stripslashes($_SERVER['REMOTE_ADDR']);
 #$address = inet_ntop($addr);
-#$ippaddress = $address;
 $ippaddress = $ipaddress;
 	
 //delete entries
@@ -33,9 +31,11 @@ $ippaddress = $ipaddress;
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
-					$db->exec("PRAGMA journal_mode = WAL;");
+					$db->exec("PRAGMA journal_mode = TRUNCATE;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE remote_addr LIKE '$ipnumber'");
 					$rows_del = $stmt->rowCount();
+					$wal_status = $db->query("PRAGMA journal_mode;")->fetchColumn();
+					echo "<br />WAL-status: ".$wal_status."<br />";
 					$db = NULL;
 					}	// end try //////////////////////////////
 				catch(PDOException $e)

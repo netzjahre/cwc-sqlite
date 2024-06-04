@@ -34,7 +34,7 @@ require "language.inc.php";
 			$cbox = $_POST[cbox];
 			$csvfile = fopen('file.csv', 'w+');
 			$db = new PDO("sqlite:$dbname");
-			$db->exec("PRAGMA journal_mode = WAL;");
+			$db->exec("PRAGMA journal_mode = TRUNCATE;");
 				foreach($cbox as $key => $value)
 					{
 					$result = $db->query("SELECT http_host,request_uri FROM $tablename[$sid] WHERE id = '$key'");

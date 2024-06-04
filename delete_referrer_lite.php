@@ -21,27 +21,17 @@ require "language.inc.php";
 
 
 		
-		if(isset ($_POST[http_referer]))
+		if(isset ($_POST[referrer]))
 			{
-			$httpreferer = htmlentities($http_referer,ENT_QUOTES);
-			$httpreferer = "%$http_referer%";
+			$referrer = htmlentities(stripslashes($_POST[referrer]));
+			$reference = "%$referrer%";
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
-		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA synchronous = NORMAL;");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_referer_host_uri_date ON $tablename[$sid] (date(timestamp, http_referer, http_host, request_uri))");
-		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), http_referer, http_host, request_uri");
 
-		$i=1;
-		$countt=0;
-		$iminus=0;
-		foreach($result as $row)
-		{
 					$db->exec("PRAGMA synchronous = NORMAL;");
 					$db->exec("PRAGMA journal_mode = TRUNCATE;");
-					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_referer = '$httpreferer'");
+					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_referer LIKE '$reference'");
 					$rows_del = $stmt->rowCount();
 					$db = NULL;
 					}	// end try //////////////////////////////

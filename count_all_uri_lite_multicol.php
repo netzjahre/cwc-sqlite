@@ -109,13 +109,13 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 					//if (((((intval($sum))%2)==0)) && (((intval($sum))%3)==0)){$stile="style= 'background-color:   Gray95'";} //#F2F2F2
 					if (((((intval($sum))%2)==0)) && (((intval($sum))%3)==0)){$stile="style= 'background-color:     lightblue'";} //#add8e6
 					if (((((intval($sum))%2)>0))){$stile="style= 'background-color: 								#779BAB;'";} //Change background
-					//if (((((intval($sum))%3)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color: burlywood'";} //#deb887
-					if (((((intval($sum))%3)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:   #cc9999;'";} //Change background
+					if (((((intval($sum))%3)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color: burlywood'";} //#deb887
+					//if (((((intval($sum))%3)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:   #cc9999;'";} //Change background
 					if (((((intval($sum))%3)>0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:    darkseagreen'";} //#8fbc8f
 					if (((((intval($sum))%3)>2))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:    aquamarine;'";} //#7fffd4
 					if (((((intval($sum))%4)==0))  && (((intval($sum))%5)==0)) {$stile="style= 'background-color:   darkolivegreen'";} //#556B2f
 					if (((((intval($sum))%4)==1))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:   khaki'";} //#f0e68c
-					if (((((intval($sum))%4)==1))  && (((intval($sum))%2)<>0) && (((intval($sum))%5)>1) && ($sum>50)) {$stile="style= 'background-color: ivory'";} //#fffff0----73					
+					if (((((intval($sum))%4)==1))  && (((intval($sum))%2)<>0) && (((intval($sum))%5)>1) && ($sum>50)) {$stile="style= 'background-color: beige'";} //#f5f5dc
 					if (((((intval($sum))%4)<>0)) && (((intval($sum))%2)==0)) {$stile="style= 'background-color:    lavender'";} //#e6e6fa
 					if (((((intval($sum))%4)<>0)) && (((intval($sum))%2)==0) && ($sum>70)) {$stile="style= 'background-color:    lavenderblush'";} //#fff0f5
 					

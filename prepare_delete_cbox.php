@@ -83,7 +83,7 @@ echo "<form action = 'delete_check_lite.php' method = 'POST'>";/////////////////
 
 		//open the database
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = WAL;");
+		$db->exec("PRAGMA journal_mode = TRUNCATE;");
 		$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
 
 		$i=1;
@@ -216,7 +216,7 @@ echo "<form action = 'delete_check_lite.php' method = 'POST'>";/////////////////
 	  $visite_odierne = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		//$db->exec("PRAGMA journal_mode = WAL;");										  
+		$db->exec("PRAGMA journal_mode = TRUNCATE;");										  
 		$stmt = $db->prepare("SELECT timestamp FROM $tablename[$sid] WHERE timestamp LIKE ?");
 		$stmt->bindValue(1,$today.'%',SQLITE3_TEXT);
 		$stmt->execute();
@@ -255,7 +255,7 @@ echo "<form action = 'delete_check_lite.php' method = 'POST'>";/////////////////
 	  $visite_ieri = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		//$db->exec("PRAGMA journal_mode = WAL;");										  
+		$db->exec("PRAGMA journal_mode = TRUNCATE;");										  
 		$stmt = $db->prepare("SELECT timestamp FROM $tablename[$sid] WHERE timestamp LIKE ?");
 		$stmt->bindValue(1,$yesterday.'%',SQLITE3_TEXT);
 		$stmt->execute();
@@ -293,7 +293,7 @@ echo "<form action = 'delete_check_lite.php' method = 'POST'>";/////////////////
 	  $numrows = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		//$db->exec("PRAGMA journal_mode = WAL;");										  
+		$db->exec("PRAGMA journal_mode = TRUNCATE;");										  
 		$result = $db->query("SELECT * FROM $tablename[$sid]");
 		if ($data = $result->fetch()) {
 			do 

@@ -87,7 +87,8 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 		$db = new PDO("sqlite:$dbname");
 		$db->exec("PRAGMA synchronous = NORMAL;");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr)");
+		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr, request_uri, http_user_agent, http_referer, http_host, id)");
+		//$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr)");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip");
 		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), remote_addr");

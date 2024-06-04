@@ -43,12 +43,12 @@ default: //DEFAULT ENGLISH LANGUAGE
 
 	//dump page
 	$back="Back to the main page";
-	$timestamp_label="Sort by Timestamp";
+	$timestamp_label="Timestamp";
 	$php_self_label="php_self";
 	$remote_host_label="Remote Host";
 	$remote_addr_label="IP";
 	$http_host_label="Domain or Subdomain)";
-	$request_uri_label="SORT BY URL";
+	$request_uri_label="URL";
 	$http_referer_label="Referrer";
 	$http_user_agent_label="User Agent";
 

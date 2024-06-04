@@ -63,9 +63,9 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	#echo "<h3>$last_visits ($_GET[n])</h3><table border='0px' style='font-size: 12px'>";	
 
 	echo "<div class='flex-container'>";
-	echo "<div class='within-flex'><a href='cwclite.php'>$back</a></div>";
-	echo "<div class='within-flex'><a href='sort_by_ip_lite.php'>Sort list by IP</a></div>";
-	echo "<div class='within-flex'>Sort list by URI</div>";
+	echo "<div><a href='cwclite.php'>$back</a></div>";
+	echo "<div><a href='sort_by_ip_lite.php'>Sort list by IP</a></div>";
+	echo "<div>Sort list by URI, compacted</div>";
 	echo "</div>";
 	echo'<div id = "wrapper">';	
 	echo "<table style='border-spacing:5px;'>";
@@ -84,13 +84,8 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		//open the database
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA synchronous = NORMAL;");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_host_uri ON $tablename[$sid] (date(timestamp), http_host, request_uri, remote_addr, http_user_agent, http_referer, id)");
-		//$db->exec("CREATE INDEX IF NOT EXISTS idx_date_host_uri ON $tablename[$sid] date(timestamp), http_host, request_uri");
-		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri GROUP BY date(timestamp),remote_addr");
-		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri ORDER BY date(timestamp),http_host, request_uri");
-		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp),http_host, request_uri");
+		$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri ORDER BY date(timestamp), http_host, request_uri");
 		$i=1;
 		$countt=0;
 		$iminus=0;
@@ -169,11 +164,45 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		} // end foreach($result as $row)
 		// close the database connection
-		//$db->exec("DROP INDEX idx_date_host_uri");
 		$db = NULL;
 	echo "</table>";
 ///////////////////////////////////////////////////////////////////////////////
-	include "footer.inc.php";
+	echo "<div class='flex-container'>";
+	echo "<div><a href='cwclite.php'>$back</a></div>";
+	echo "<div><a href='sort_by_ip_lite.php'>Sort list by IP</a></div>";
+	echo "<div>Sort list by URI, compacted</div>";
+	echo "</div>";
+	
+	echo "<p align='center'><input type='submit' name='rubber' value='Delete checked rows'/></p>";
+	echo "</form>";
+	echo "<p align='center'>Inserted or pasted text must be left-aligned.</p>";	
+	echo "<form action = 'delete_timestamp_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='timestamp' value='Timestamp' maxlength='18' size='18'>";
+	echo " and <input type='submit' name='timerubber' value='delete rows'></p>";
+	echo "</form>";
+	echo "<form action = 'delete_ip_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='ip' value='IP' maxlength='15' size='15'>";
+	echo " and <input type='submit' name='iprubber' value='delete rows'></p>";
+	echo "</form>";
+	echo "<form action = 'delete_useragent_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='useragent' value='User Agent' maxlength='15' size='15'>";
+	echo " and <input type='submit' name='agentrubber' value='delete rows'></p>";
+	echo "</form>";
+	echo "<form action = 'delete_url_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='url' value='URL, part next domain/' maxlength='15' size='15'>";
+	echo " and <input type='submit' name='urlrubber' value='delete rows'></p>";
+	echo "</form>";
+	
+	echo "<form action = 'delete_me_lite.php' method = 'POST'>";
+	echo "<p align='center'><input type='submit' name='selfrubber' value='Delete own visits'></p>";
+	echo "</form>";
+
+	echo "<form action = 'delete_all_bots_lite.php' method = 'POST'>";
+	echo "<p align='center'><input type='hidden' name='useragent' value='bot'>";
+	echo "<input type='submit' name='botrubber' value='Delete most bots'></p>";
+	echo "</form>";
+	echo '</div>';//Ende wrapper
+	
     } // end if ($_GET[action]=="dump"...	
 	
 	else{ //show the main page/////////////////////////////////////////////////////////////////
@@ -192,7 +221,6 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	  $yesterday = date("Y-m-d",strtotime("-1 days"));
 	  $visite_odierne = 0;
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
 		$stmt = $db->prepare("SELECT timestamp FROM $tablename[$sid] WHERE timestamp LIKE ?");
 		$stmt->bindValue(1,$today.'%',SQLITE3_TEXT);
 		$stmt->execute();
@@ -211,9 +239,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	  $visitatori_odierni = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		//group by !
-		$stmt = $db->prepare("SELECT request_uri FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY remote_addr");
+		$stmt = $db->prepare("SELECT request_uri FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY request_uri");
 		$stmt->bindValue(1,$today.'%',SQLITE3_TEXT);
 		$stmt->execute();
 		if ($data = $stmt->fetch()) {
@@ -232,7 +258,6 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	  $visite_ieri = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
 		$stmt = $db->prepare("SELECT timestamp FROM $tablename[$sid] WHERE timestamp LIKE ?");
 		$stmt->bindValue(1,$yesterday.'%',SQLITE3_TEXT);
 		$stmt->execute();
@@ -253,7 +278,6 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	  $visitatori_ieri = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
 		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY remote_addr");
 		$stmt->bindValue(1,$yesterday.'%',SQLITE3_TEXT);
 		$stmt->execute();
@@ -270,7 +294,6 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	  $numrows = 0;
 
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
 		$result = $db->query("SELECT * FROM $tablename[$sid]");
 		if ($data = $result->fetch()) {
 			do 

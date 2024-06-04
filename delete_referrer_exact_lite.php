@@ -19,13 +19,14 @@ require "language.inc.php";
 
 //delete entries
 		
-		if(isset ($_POST[referrer]))
+		if(isset ($_POST[referexact]))
 			{
-			$httpreferer = htmlentities($_POST[referrer]);
+			$httpreferer = htmlentities($_POST[referexact]);
 			$httpreferer = htmlentities($httpreferer,ENT_QUOTES);
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
+					$db->exec("PRAGMA synchronous = NORMAL;");
 					$db->exec("PRAGMA journal_mode = TRUNCATE;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_referer = '$httpreferer'");
 					$rows_del = $stmt->rowCount();

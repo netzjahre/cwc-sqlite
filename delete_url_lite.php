@@ -26,7 +26,7 @@ require "language.inc.php";
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
-					$db->exec("PRAGMA journal_mode = WAL;");
+					$db->exec("PRAGMA journal_mode = TRUNCATE;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE request_uri LIKE '$urlnumber'");
 					$rows_del = $stmt->rowCount();
 					$db = NULL;

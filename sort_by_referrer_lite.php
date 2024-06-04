@@ -86,7 +86,8 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 		$db = new PDO("sqlite:$dbname");
 		$db->exec("PRAGMA synchronous = NORMAL;");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_referer_host_uri_date ON $tablename[$sid] (date(timestamp, http_referer, http_host, request_uri))");
+		$db->exec("CREATE INDEX IF NOT EXISTS idx_referer_host_uri_date ON $tablename[$sid] (date(timestamp), http_referer, http_host, request_uri, remote_addr, http_user_agent, id)");
+		//$db->exec("CREATE INDEX IF NOT EXISTS idx_referer_host_uri_date ON $tablename[$sid] (date(timestamp, http_referer, http_host, request_uri))");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri GROUP BY date(timestamp),remote_addr");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri ORDER BY date(timestamp),http_host, request_uri");
 		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), http_referer, http_host, request_uri");

@@ -25,7 +25,8 @@ require "language.inc.php";
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
-					$db->exec("PRAGMA journal_mode = WAL;");
+					$db->exec("PRAGMA synchronous = NORMAL;");
+					$db->exec("PRAGMA journal_mode = TRUNCATE;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE remote_addr LIKE '$ipnum'");
 					$rows_del = $stmt->rowCount();
 					$db = NULL;

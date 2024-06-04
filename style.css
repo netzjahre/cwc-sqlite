@@ -4,11 +4,17 @@
   justify-content: center;
   align-items: center;
 }
+/*
 .flex-container > div {
   margin: 10px;
   text-align: center;
 }
+*/
 
+#container {
+  text-align: left;
+  margin: 0 auto;
+}
 
 /*
 div.redTable {
@@ -97,6 +103,9 @@ div.redTable {
   font-size: 19px;
   width: 33.33%;
   text-align: center;
+}
+.within-flex {
+	padding: 10px;
 }
 #wrapper {
 	display: flex;

@@ -51,13 +51,16 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 				echo "</div>";
 				echo "<center><table cellpadding='5' style='border-spacing:5px'>";
 				echo "<tr style='background-color:#a2a5a7;text-align: left;'>
-					  <th>Number</th>
-					  <th>URL</th>
-					  <th>Count</th>
-					  </tr>";
+					<!--th>Number</th-->						   
+					<th>&nbsp;&nbsp;i</th>
+					<th>URL</th>
+					<th>Count</th>
+					<!--th>Prev</th-->
+					</tr>";
 				//open the database////////////////////////////
 				$db = new PDO("sqlite:$dbname1");
-				$db->exec("PRAGMA journal_mode = WAL;");
+				$db->exec("PRAGMA synchronous = NORMAL;");
+				$db->exec("PRAGMA journal_mode = TRUNCATE;");
 				//www.plus2net.com/php_tutorial/sqlite-delete.php
 				$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 				$query="DELETE FROM $tablename1[$sid] where http_host=:http_host";
@@ -73,12 +76,16 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 							$msg=" Database problem, please contact site admin ";
 							}
 				$result = $db->query("SELECT http_host, request_uri, COUNT(request_uri) as 'sum' FROM $tablename1[$sid] GROUP BY http_host,request_uri ORDER BY sum DESC");
-				$i=1;
-				$countt=0;
-				$iminus=0;
-				foreach($result as $row)
+				//$result = $db->query("SELECT http_host, request_uri, COUNT(request_uri) as 'sum' FROM $tablename1[$sid] GROUP BY http_host,request_uri ORDER BY sum ASC");
+				$total=0;
+				$prevsum=1;
+				$bright = "style= 'background-color: #cecece;'";//test other color
+				$dark = "style= 'background-color: #779BAB;'";//test other color
+				$style=$bright;
+				
+				foreach($result as $i=>$row)
 					{
-					if ($i == $n_vis){break;}
+					//if ($i == $n_vis){break;}
 					$timestamp = $row[timestamp];
 					$atime = intval(substr($timestamp,8,2));
 					$xtime = substr($timestamp,0,9);
@@ -86,21 +93,46 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 					$http_host = htmlentities($http_host,ENT_QUOTES);
 					$request_uri = $row[request_uri];
 					$request_uri = htmlentities($request_uri,ENT_QUOTES);
-					$sum = $row[sum];
-					$count[$i]=$sum;
-					if (((((intval($sum))%2)==0))){$stile="style= 'background-color: #cecece;'";} //Change background
-					if (((((intval($sum))%2)==0)) && (((intval($sum))%3)==0)){$stile="style= 'background-color: #F2F2F2;'";} //Change background
-					if (((((intval($sum))%2)>0))){$stile="style= 'background-color: #779BAB;'";} //Change background
-					if (((((intval($sum))%3)==0))  && (((intval($sum))%2)!=0)) {$stile="style= 'background-color: #F2F5A9;'";} //Change background
-					echo "<tr $stile><td align='right'>$i</td>";
-					echo "<td>$http_host$request_uri</td><td align='right'>$sum</td></tr>";
-					$i++;
+					$currsum = $row[sum];
+					$total=$total+$currsum;
+					//Change background////////////////////////////////////////
+					
+					/*switch (TRUE) {
+					case (($currsum == $prevsum) && (((intval($currsum))%2)==0)):
+						$style=$bright;
+					case (($currsum <> $prevsum) && ($style==$dark)):
+						$style=$bright;
+					case (($currsum <> $prevsum) && ($style==$bright)):
+						$style=$dark;
+					}*/
+
+					/*if(($prevsum == $currsum) && (((intval($currsum))%2)<>0)) //&& ($style==$dark))
+						{$style=$dark;}
+					elseif(($prevsum == $currsum) && (((intval($currsum))%2)==0)) //&& ($style==$dark))
+						{$style=$bright;}*/
+					if (($prevsum == $currsum) && ($style==$dark))
+						{$style=$dark;}
+					elseif(($prevsum <> $currsum) && ($style==$dark))
+						{$style=$bright;}
+					elseif (($prevsum == $currsum) && ($style==$bright))
+						{$style=$bright;}
+					elseif(($prevsum <> $currsum) && ($style==$bright))
+						{$style=$dark;}
+					echo "<tr $style><td align='right'>$i</td>";
+					echo "<td>$http_host$request_uri</td><td align='right'>$currsum</td><!--td align='right'>$prevsum</td--></tr>";
+					//$currsum=$row[sum];
+					$prevsum=$currsum;
 					} // end foreach($result as $row)
-				$db = NULL;
+				echo "<tr><td align='right'>.</td>";					
+				echo "<td>total</td><td align='right'>$total</td></tr>";
 				echo "</table></center>";
+				$wal_status = $db->query("PRAGMA journal_mode;")->fetchColumn();
+				echo $wal_status."<br />";																	
+				$db = NULL;
 				///////////////////////////////////////////////////////////////////////
 				echo "<div class='flex-container'>";
 				echo "<div><a href='cwclite.php'>$back</a></div>";
+				echo "<div><a href='count_all_uri_lite_multicol.php'>multicolor display</a></div>";																					   
 				echo "</div>";
 				} // end if ($_GET[action]=="dump"...//////////////////////////////////////
 					else{ //show the main page

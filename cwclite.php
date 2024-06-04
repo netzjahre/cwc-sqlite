@@ -56,6 +56,7 @@
 				echo "<div class='within-flex'><a href='$_SERVER[PHP_SELF]'>$back</a></div>";
 				echo "<div class='within-flex'><a href='sort_by_ip_lite.php'>Sort list by IP</a></div>";
 				echo "<div class='within-flex'><a href='sort_by_uri_lite.php'>Sort list by URL</a></div>";
+				echo "<div class='within-flex'><a href='sort_by_referrer_lite.php'>Sort list by referrer</a></div>";
 				echo "<div class='within-flex'><a href='count_all_uri_lite.php'>Archive of exported visit data</a></div>";
 				echo "</div>";
 				echo'<div id = "wrapper">';	
@@ -77,12 +78,14 @@
 				$db = new PDO("sqlite:$dbname");
 				$db->exec("PRAGMA synchronous = NORMAL;");
 				$db->exec("PRAGMA journal_mode = TRUNCATE;");
+
 				/*$db->exec("CREATE INDEX IF NOT EXISTS idx_many ON cwcsqlite (timestamp,remote_host,remote_addr,request_uri,http_user_agent)");
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_timestamp ON cwcsqlite (timestamp, id)");
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON cwcsqlite (date(timestamp), remote_addr)");
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_date_uri ON cwcsqlite (date(timestamp), request_uri)");
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_remoteaddr_requesturi ON cwcsqlite (remote_addr, request_uri)");
 				$db->exec("CREATE INDEX IF NOT EXISTS idx_remotehost_requesturi ON cwcsqlite (remote_host, request_uri)");*/
+
 				//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_timestamp ORDER BY timestamp ASC");
 				$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY timestamp ASC");
 				$i=1;

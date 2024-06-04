@@ -56,7 +56,7 @@ include "./config.inc.php";
 include "./language.inc.php";
 		$db = new PDO("sqlite:$dbname1");
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$db->exec("PRAGMA journal_mode = WAL;");
+		$db->exec("PRAGMA journal_mode = TRUNCATE;");
 		
 $stmt = $db->query ("CREATE TABLE IF NOT EXISTS $tablename1[$sid](http_host,request_uri)");
 $stmt->execute();
@@ -70,7 +70,7 @@ $stmt = $db -> prepare("INSERT INTO $tablename1[$sid](http_host,request_uri) VAL
 				$http_host = $data[0];
 				$request_uri = $data[1];
 				$stmt = $db -> exec("INSERT INTO $tablename1[$sid] VALUES('$data[0]','$data[1]')");
-				echo "<br />";
+				//echo "<br />";
 				echo $numrows."-".$data[0].$data[1]."<br />";
 				}
 	fclose ($handle);

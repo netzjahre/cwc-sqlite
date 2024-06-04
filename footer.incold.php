@@ -204,37 +204,38 @@ echo "<p align='center'>or insert left-aligned a part of   <input type='text' na
 echo " and <input type='submit' name='iprubber' value='delete rows'></p>";
 echo "</form>";
 echo "</div>";
-############################################################################################
-echo "<div class='flex-container'>";
-echo "<div class='within-flex'>";
+
+//echo "<div class='flex-container' style='border:solid black 5px'>";
+echo "<div>";
+echo "<div>";
 echo "<form action = 'delete_url_lite.php' method = 'POST'>";
-echo "<p align='center'>or insert left-aligned a part of <input type='text' name='url' value='URL, part next to domain/' maxlength='30' size='30'>";
+echo "<p align='center'>or insert left-aligned a part of <input type='text' name='url' value='URL, part next to domain' maxlength='30' size='30'>";
 echo " and <input type='submit' name='urlrubber' value='delete rows'></p>";
 echo "</form>";
 echo "</div>";
 
-echo "<div class='within-flex'>";
+echo "<div>";
 echo "<form action = 'delete_url_exact_lite.php' method = 'POST'>";
-echo "<p align='center'>or insert <input type='text' name='urlexact' value='exact URL next to domain/' maxlength='30' size='30'>
+//echo "<p align='center'>or insert only <input type='text' name='url' value='/' maxlength='1' size='1'>
+echo "<p align='center'>or insert <input type='text' name='urlexact' value='exact /URL after domain' maxlength='30' size='30'>
 and <input type='submit' name='urlexactrubber' value='delete rows'></p>";
 echo "</form>";
 echo "</div>";
 echo "</div>";
-##############################################################################################
-echo "<div class='flex-container'>";
-echo "<div class='within-flex>";
+
+echo "<div>";
+echo "<form action = 'delete_referrer_exact_lite.php' method = 'POST'>";
+echo "<p align='center'>or insert left-aligned a part of   <input type='text' name='referexact' value='exact referrer or dot . for empty' maxlength='50' size='30'> and <input type='submit' name='referrubberexact' value='delete rows'></p>";
+//echo " and <input type='submit' name='referrubexact' value='delete rows'></p>";
+echo "</form>";
+
+echo "<div>";
 echo "<form action = 'delete_referrer_lite.php' method = 'POST'>";
 echo "<p align='center'>or insert left-aligned a part of   <input type='text' name='referrer' value='referrer' maxlength='30' size='30'> and <input type='submit' name='referrubber' value='delete rows'></p>";
+//echo " and <input type='submit' name='referrubber' value='delete rows'></p>";
 echo "</form>";
-echo "</div>";
 
-echo "<div class='within-flex'>";
-echo "<form action = 'delete_referrer_exact_lite.php' method = 'POST'>";
-echo "<p align='center'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or insert left-aligned a part of   <input type='text' name='referexact' value='exact referrer or dot . for empty' maxlength='50' size='30'> and <input type='submit' name='referrubexact' value='delete rows'></p>";
-echo "</form>";
-echo "</div>";
-echo "</div>";
-#############################################################################################
+//echo "<div style='border:solid black 5px'>";
 echo "<div>";
 echo "<form action = 'delete_useragent_lite.php' method = 'POST'>";
 echo "<p align='center'>or insert left-aligned a part of   <input type='text' name='useragent' value='User Agent' maxlength='50' size='20'> and <input type='submit' name='agentrubber' value='delete rows'></p>";
