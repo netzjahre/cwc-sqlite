@@ -27,12 +27,6 @@ sql = "CREATE TABLE cwcsqlite(" \
       "http_referer TEXT, " \
       "http_user_agent TEXT)"
 cursor.execute(sql)
-sql = "CREATE INDEX IF NOT EXISTS idx_timestamp ON cwcsqlite (timestamp, id)"
-cursor.execute(sql)
-sql = "CREATE INDEX IF NOT EXISTS idx_date_ip ON cwcsqlite (date(timestamp), remote_addr)"
-cursor.execute(sql)
-sql = "CREATE INDEX IF NOT EXISTS idx_date_uri ON cwcsqlite (date(timestamp), request_uri)"
-cursor.execute(sql)
 connection.commit()
 # Verbindung beenden
 connection.close()
