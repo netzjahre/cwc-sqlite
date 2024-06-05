@@ -1,4 +1,4 @@
-# cwc-sqlite
+# cwc-sqlite#trial version sqlite
 Original: https://github.com/luciomarinelli/cwc  version 20150324
 
 Fork https://github.com/netzjahre/cwc
