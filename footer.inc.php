@@ -222,7 +222,7 @@ echo "</div>";
 echo "</div>";
 ##############################################################################################
 echo "<div class='flex-container'>";
-echo "<div class='within-flex>";
+echo "<div class='within-flex'>";
 echo "<form action = 'delete_referrer_lite.php' method = 'POST'>";
 echo "<p align='center'>or insert left-aligned a part of   <input type='text' name='referrer' value='referrer' maxlength='30' size='30'> and <input type='submit' name='referrubber' value='delete rows'></p>";
 echo "</form>";
