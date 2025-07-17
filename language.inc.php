@@ -1,6 +1,6 @@
 <?php
 //Detect language from HTTP_ACCEPT_LANGUAGE string
-$language=($_SERVER[HTTP_ACCEPT_LANGUAGE]);
+$language=($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 $language = htmlentities($language,ENT_QUOTES);
 $lang=substr($language,0,2);
 $line = "0";
@@ -17,8 +17,10 @@ case 'it': //ITALIAN LANGUAGE
 	//dump page
 	$back="Ritorna alla pagina principale";
 	$timestamp_label="Data & ora";
+	$date_label="Data";
 	$php_self_label="Pagina visitata";
 	$remote_host_label="Translate it";
+	$country_label="Translate it";
 	$remote_addr_label="Indirizzo IP";
 	$http_host_label="Translate it";
 	$request_uri_label="Translate it";
@@ -44,9 +46,11 @@ default: //DEFAULT ENGLISH LANGUAGE
 	//dump page
 	$back="Back to the main page";
 	$timestamp_label="Timestamp";
+	$date_label="Date";
 	$php_self_label="php_self";
 	$remote_host_label="Remote Host";
 	$remote_addr_label="IP";
+	$country_label="Cntry";
 	$http_host_label="Domain or Subdomain)";
 	$request_uri_label="URL";
 	$http_referer_label="Referrer";
