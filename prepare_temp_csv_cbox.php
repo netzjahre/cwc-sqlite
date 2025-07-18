@@ -36,6 +36,7 @@ function is_bot($text) {
 <?php
 
 require "language.inc.php";
+
 //count the number of sites
 $number_of_sites=count($sitename)+1;
 $ipcount=1;
@@ -85,39 +86,19 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 			foreach($result as $row)
 			{
 				if ($i == $n_vis){break;}
+				$remote_addr = htmlspecialchars($row['remote_addr']);														 
 				//$aremote = $remote_addr;
-				$aremote = htmlspecialchars($row['remote_addr'], ENT_QUOTES);
+				//$aremote = htmlspecialchars($row['remote_addr'], ENT_QUOTES);
 				//$timestamp = $row[1];
-				//$atime = intval(substr($timestamp,8,2));
-				
-				//$remote_addr = htmlentities($row[3],ENT_QUOTES);
-				//$remote_host = gethostbyaddr($remote_addr);
-				//$id = $row[0];
-				//$id = htmlentities($id,ENT_QUOTES);
-				//$id = htmlspecialchars($row['id']);
-				//$timestamp = $row[1];
-				//$timestamp = htmlentities($timestamp,ENT_QUOTES);
-				//$php_self = $row[2];
-				//$php_self = htmlentities($php_self,ENT_QUOTES);
-				//$remote_addr = $row[3];
-				//$remote_addr = htmlentities($remote_addr,ENT_QUOTES);
-				//$country = htmlentities($row[9],ENT_QUOTES);
-				//$http_host = $row[4];
-				//$http_host = htmlentities($http_host,ENT_QUOTES);
-				//$request_uri = $row[5];
-				//$request_uri = htmlentities($request_uri,ENT_QUOTES);
-				//$http_referer = $row[6];
-				//$http_referer = htmlentities($http_referer,ENT_QUOTES);
-				//$http_user_agent = $row[7];
-				//$http_user_agent = htmlentities($http_user_agent,ENT_QUOTES);
-				if ($bremote==htmlspecialchars($row['remote_addr']) && htmlspecialchars($row['remote_addr'], ENT_QUOTES)<>"")
+				$atime = htmlspecialchars($row['date_txt'], ENT_QUOTES);
+				//if ($bremote==htmlspecialchars($row['remote_addr']) && htmlspecialchars($row['remote_addr'], ENT_QUOTES)<>"")
 				   {$ipcount = $ipcount+1;}
-				//if ( $atime <> $btime && $i>1)
-				//   {
-				//	$iminus=$i-1;
-				//	$line = "<hr style='height:3px;background-color:#000000;'/>";
-				//	echo "<tr><td>$line</td><td>"."count = ".$countt."</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</tr>";
-				//   }
+				if ( $atime <> $btime && $i>1)
+				   {
+					$iminus=$i-1;
+					$line = "<hr style='height:3px;background-color:#000000;'/>";
+					echo "<tr><td>$line</td><td>"."count = ".$countt."</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</tr>";
+					}
 				if (((($i)%2)==0)) {$stile="style= 'background-color: #cecece;'";} //Change background
 				if (((($i)%2)==0) && is_bot($row[7])) {$stile="style= 'background-color: #cecece;color: white'";} //Change background and text
 				if (((($i)%2)>0)) {$stile="style= 'background-color: #779BAB;'";} //Change background
@@ -134,8 +115,9 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 				echo "<td>".htmlspecialchars($row['id'], ENT_QUOTES)."</td>
 				<td>".htmlspecialchars($row['date_txt'], ENT_QUOTES)."</td>
 				<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['remote_host'])."</td>";
-				//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
-				echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>".htmlspecialchars($row['remote_addr'])."</td>";
+
+				//echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>".htmlspecialchars($row['remote_addr'])."</td>";
+				echo "<td><a href='geo.php?ip=$remote_addr' target='_blank'>$remote_addr</a></td>";																	   
 				echo "<td>".htmlspecialchars($row['country'], ENT_QUOTES)."</td>";
 				echo"
 				<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['http_host'], ENT_QUOTES)."</td>
@@ -148,9 +130,9 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 				#echo "<td>".$countt."</td></tr>";
 				echo "<td>".$ipcount."</td></tr>";
 				$i=$i+1;
-				$Datumm = substr($timestamp,0,10);
-				$bremote = $remote_addr;
-				$btime = intval(substr($timestamp,8,2));
+				//$Datumm = substr($timestamp,0,10);
+				//$bremote = htmlspecialchars($row['remote_addr'])
+				$btime = htmlspecialchars($row['date_txt'], ENT_QUOTES);
 			} // end foreach($result as $row)
 			$db = NULL;
 		echo "</table>";

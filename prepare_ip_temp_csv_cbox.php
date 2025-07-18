@@ -4,7 +4,7 @@
 //
 error_reporting(E_ALL);
 require "config.inc.php";
-include "db_tab_vars.inc.php";
+
 
 //Function to detect bots
 function is_bot($text) {
@@ -79,8 +79,8 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 			//open the database
 			$db = new PDO("sqlite:$dbname");
 			$db->exec("PRAGMA journal_mode = TRUNCATE;");
-			$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON cwcsqlite (datime_txt, remote_addr)");
-			$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
+			$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON cwcsqlite (date_txt, remote_addr)");
+			$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date_txt, remote_addr");
 
 			$i=1;
 			$countt=0;
@@ -89,14 +89,12 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 			{
 
 				if ($i == $n_vis){break;}
+				$remote_addr = htmlspecialchars($row['remote_addr']);
 				//$aremote = $remote_addr;
-				$aremote = htmlspecialchars($row['remote_addr'], ENT_QUOTES);																 
+				//$aremote = htmlspecialchars($row['remote_addr'], ENT_QUOTES);																 
 				//$timestamp = $row[1];
-				//$atime = intval(substr($timestamp,8,2));
-
-				//$remote_addr = htmlspecialchars($row['remote_addr']);
+				$atime = htmlspecialchars($row['date_txt'], ENT_QUOTES);
 				//$country = htmlentities($row[9],ENT_QUOTES);
-
 				//$id = $row[0];
 				//$id = htmlentities($id,ENT_QUOTES);
 				//$timestamp = htmlentities($timestamp,ENT_QUOTES);
@@ -110,7 +108,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 				//$http_referer = htmlentities($http_referer,ENT_QUOTES);
 				//$http_user_agent = $row[7];
 				//$http_user_agent = htmlentities($http_user_agent,ENT_QUOTES);
-				if ($bremote==htmlspecialchars($row['remote_addr']) && htmlspecialchars($row['remote_addr'], ENT_QUOTES)<>"")
+				//if ($bremote==htmlspecialchars($row['remote_addr']) && htmlspecialchars($row['remote_addr'], ENT_QUOTES)<>"")
 				   {$ipcount = $ipcount+1;}
 				if ( $atime <> $btime && $i>1)
 				   {
@@ -134,10 +132,8 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 				echo "<td>".htmlspecialchars($row['id'])."</td>
 				<td>".htmlspecialchars($row['date_txt'])."</td>
 				<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['http_host'])."</td>";
-				//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
-				echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>$remote_addr</a></td>";
-				//Country-->
-
+				//echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>".htmlspecialchars($row['remote_addr'])."</a></td>";
+				echo "<td><a href='geo.php?ip=$remote_addr' target='_blank'>$remote_addr</a></td>";
 				echo "<td>".htmlspecialchars($row['country'])."</td>";
 				echo"
 				<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['http_host'])."</td>
@@ -151,9 +147,9 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 				#echo "<td>".$countt."</td></tr>";
 				echo "<td>".$ipcount."</td></tr>";
 				$i=$i+1;
-				$Datumm = substr($timestamp,0,10);
-				$bremote = $remote_addr;
-				$btime = intval(substr($timestamp,8,2));
+				//$Datumm = substr($timestamp,0,10);
+				//$bremote = htmlspecialchars($row['remote_addr'])
+				$btime = htmlspecialchars($row['date_txt'], ENT_QUOTES);
 			} // end foreach($result as $row)
 			$db = NULL;
 		echo "</table>";
