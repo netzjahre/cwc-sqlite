@@ -14,5 +14,5 @@
 	$tablename1[$sid]="cwctimport";
 	//Set your time zone
 	date_default_timezone_set('Europe/Berlin');
-?>
+	//date_default_timezone_set('Europe/London');
 
