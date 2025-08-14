@@ -40,7 +40,6 @@ Original (v. 20150324) by <a href = "https://github.com/luciomarinelli/cwc"> Luc
 <br/>&nbsp;
 
 <?php
-echo "<h3>$sitename[$sid]</h3>";										
 require "language.inc.php";
 
 //count the number of sites
@@ -64,34 +63,27 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 	#echo "<h3>$last_visits ($_GET[n])</h3><table border='0px' style='font-size: 12px'>";	
 
 	echo "<div class='flex-container'>";
-	echo "<div class='within-flex'><a href='cwclite.php'>$back</a></div>";
-	echo "<div class='within-flex'><a href='sort_by_uri_lite.php'>Sort list by URL</a></div>";
+	echo "<div><a href='cwclite.php'>$back</a></div>";
+	echo "<div><a href='sort_by_uri_lite.php'>Sort list by URL</a></div>";
 	echo "</div>";
 	echo'<div id = "wrapper">';	
 	echo "<table style='border-spacing:5px;'>";
 	echo "<tr style='background-color:#a2a5a7;text-align: left;'>
 		<th>Id</th>
-		<th>SORT 2<br />$timestamp_label</th>
+		<th>SORT BY<br />$timestamp_label</th>
 		<th style='width:20%'>$remote_host_label</th>
 		<th>$remote_addr_label</th>
-		<th style='width:3%'>.</th>
-		<!--th style='width:10%'>$http_host_label</th-->
-		<th style='width:27%'>SORT 1 $request_uri_label</th>
+		<th style='width:10%'>$http_host_label</th>
+		<th style='width:20%'>$request_uri_label</th>
 		<th style='width:20%'>$http_referer_label</th>
 		<th style='width:20%'>$http_user_agent_label</th>
 		<th>Select to delete</th>
 		<th>Daily Count</th>
 		</tr>";	
 
-		//open the database					 
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA synchronous = NORMAL;");
-		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr, request_uri, http_user_agent, http_referer, http_host, id)");
-		//$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr)");
-		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
-		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip");
-		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), remote_addr");
+		$db->exec("PRAGMA journal_mode = WAL;");
+		$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
 
 		$i=1;
 		$countt=0;
@@ -149,8 +141,8 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 			//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
 			echo "<td><a href='https://www.whois.com/whois/$row[3]' target='_blank'>$row[3]</a></td>";
 			echo"
-			<td style='word-break: break-all; word-wrap: normal;'>.</td>
-			<td style='word-break: break-all; word-wrap: normal;'>$row[4]$row[5]</td>
+			<td style='word-break: break-all; word-wrap: normal;'>$row[4]</td>
+			<td style='word-break: break-all; word-wrap: normal;'>$row[5]</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[6]</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[7]</td>";
 			echo "<td><input type='checkbox' name='cbox[$row[0]]'/></td>";
@@ -164,16 +156,155 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 			$btime = intval(substr($timestamp,8,2));
 		} // end foreach($result as $row)
 		// close the database connection
-		//$db->exec("DROP INDEX idx_date_ip");
 		$db = NULL;
 	echo "</table>";
 ///////////////////////////////////////////////////////////////////////////////
-	include "footer.inc.php";
+	echo "<div class='flex-container'>";
+	echo "<div><a href='cwclite.php'>$back</a></div>";
+	echo "<div><a href='sort_by_ip_lite.php'>Sort list by IP</a></div>";
+	echo "<div><a href='sort_by_uri_lite.php'>Sort list by URL</a></div>";
+	echo "<div><a href='prepare_export_cbox.php'>Export by checkboxes</a></div>";
+	echo "</div>";
+	echo "<p align='center'><input type='submit' name='rubber' value='Delete checked rows'/></p>";
+	echo "</form>";
+	echo "<p align='center'>Inserted or pasted text must be left-aligned.</p>";	
+	echo "<form action = 'delete_timestamp_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='timestamp' value='Timestamp' maxlength='18' size='18'>";
+	echo " and <input type='submit' name='timerubber' value='delete rows'></p>";
+	echo "</form>";
+	echo "<form action = 'delete_ip_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='ip' value='IP' maxlength='15' size='15'>";
+	echo " and <input type='submit' name='iprubber' value='delete rows'></p>";
+	echo "</form>";
+	echo "<form action = 'delete_useragent_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='useragent' value='User Agent' maxlength='15' size='15'>";
+	echo " and <input type='submit' name='agentrubber' value='delete rows'></p>";
+	echo "</form>";
+	echo "<form action = 'delete_url_lite.php' method = 'POST'>";
+	echo "<p align='center'>or insert a part of   <input type='text' name='url' value='URL, part next domain/' maxlength='15' size='15'>";
+	echo " and <input type='submit' name='urlrubber' value='delete rows'></p>";
+	echo "</form>";
+	
+	echo "<form action = 'delete_me_lite.php' method = 'POST'>";
+	echo "<p align='center'><input type='submit' name='selfrubber' value='Delete own visits'></p>";
+	echo "</form>";
+
+	echo "<form action = 'delete_all_bots_lite.php' method = 'POST'>";
+	echo "<p align='center'><input type='hidden' name='useragent' value='bot'>";
+	echo "<input type='submit' name='botrubber' value='Delete most bots'></p>";
+	echo "</form>";
+	echo '</div>';//Ende wrapper
+	
     } // end if ($_GET[action]=="dump"...	
 	
 	else{ //show the main page/////////////////////////////////////////////////////////////////
-		include "toyester.inc.php";
-    } // end else show the mainpage ///////////////////////////////////////////////////////
+	//
+	//
+	//
+	echo "<table cellpadding='10' style='border-spacing:5px;'>";
+	echo "<tr style='text-align: left; background-color: #a2a5a7'><th>$site_label</th><th>$today_visits</th><th>$today_visitors</th><th>$yesterday_visits</th><th>$yesterday_visitors</th><th>$last_visits</th></tr>";
+
+	
+	for ($siteid=1; $siteid<$number_of_sites; $siteid++)
+	{ ////////////////////////////////////////////////////////////////////
+ 
+	  //count today's visits/////////////////////
+	  $today = date("Y-m-d");
+	  $yesterday = date("Y-m-d",strtotime("-1 days"));
+	  $visite_odierne = 0;
+
+		$db = new PDO("sqlite:$dbname");
+		$stmt = $db->prepare("SELECT timestamp FROM $tablename[$sid] WHERE timestamp LIKE ?");
+		$stmt->bindValue(1,$today.'%',SQLITE3_TEXT);
+		$stmt->execute();
+
+		if ($data = $stmt->fetch()) {
+			do 
+				{$visite_odierne += 1;}
+			while ($data = $stmt->fetch());
+		} else {
+        echo '-';
+		}
+	  $db = NULL;
+
+	  //count today's visitors/////////////////////
+	  $today = date("Y-m-d");
+	  $visitatori_odierni = 0;
+		$db = new PDO("sqlite:$dbname");
+		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY remote_addr");
+		$stmt->bindValue(1,$today.'%',SQLITE3_TEXT);
+		$stmt->execute();
+		if ($data = $stmt->fetch()) {
+			do 
+				{$visitatori_odierni += 1;}
+			while ($data = $stmt->fetch());
+		} else {
+        echo '-';
+		}
+		
+	  $db = NULL;
+
+	  //count yesterday's visits/////////////////////
+	  $today = date("Y-m-d");
+	  $yesterday = date("Y-m-d",strtotime("-1 days"));
+	  $visite_ieri = 0;
+		$db = new PDO("sqlite:$dbname");
+		$stmt = $db->prepare("SELECT timestamp FROM $tablename[$sid] WHERE timestamp LIKE ?");
+		$stmt->bindValue(1,$yesterday.'%',SQLITE3_TEXT);
+		$stmt->execute();
+
+		if ($data = $stmt->fetch()) {
+			do 
+				{$visite_ieri += 1;}
+			while ($data = $stmt->fetch());
+		} else {
+        echo '-';
+		}
+	  $db = NULL;
+	  
+	  //count yesterday's visitors/////////////////////
+	  $today = date("Y-m-d");
+	  $yesterday = date("Y-m-d",strtotime("-1 days"));
+	  $visitatori_ieri = 0;
+		$db = new PDO("sqlite:$dbname");
+		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY remote_addr");
+		$stmt->bindValue(1,$yesterday.'%',SQLITE3_TEXT);
+		$stmt->execute();
+		if ($data = $stmt->fetch()) {
+			do 
+				{$visitatori_ieri += 1;}
+				while ($data = $stmt->fetch());
+		} else {
+        echo '-';
+		}
+	  $db = NULL; 
+//////////////////////////////////////////////////////////////////////////  
+	  $result = 0;
+	  $numrows = 0;
+		$db = new PDO("sqlite:$dbname");
+		$result = $db->query("SELECT * FROM $tablename[$sid]");
+		if ($data = $result->fetch()) {
+			do 
+				{$numrows += 1;}
+			while ($data = $result->fetch());
+		} else {
+        echo '-';
+		}
+		
+	  $db = NULL;
+		echo "<tr style='background-color:#cecece;'>
+			<td>$sitename[$siteid]</td>
+			<td>$visite_odierne</td>
+			<td>$visitatori_odierni</td>
+			<td>$visite_ieri</td>
+			<td>$visitatori_ieri</td>
+			<td><a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
+				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
+				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
+				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
+	} // end for ($siteid=1; $siteid<$number_of_sites; $siteid++)/////////
+	echo "</table>";  
+  } // end else show the mainpage ///////////////////////////////////////////////////////
 ?>
 </body>
 </html>

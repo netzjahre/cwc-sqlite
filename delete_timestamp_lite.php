@@ -28,7 +28,7 @@ require "language.inc.php";
 			$timestamp = "%$timestamp%";
 			echo "<br/>".$tablename[$sid]."<br/>";
 					$db = new PDO("sqlite:$dbname");
-					$db->exec("PRAGMA journal_mode = TRUNCATE;");
+					$db->exec("PRAGMA journal_mode = WAL;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE timestamp LIKE '$timestamp'");
 					$rows_del = $stmt->rowCount();
 					$db = NULL;

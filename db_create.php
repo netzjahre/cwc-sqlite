@@ -12,7 +12,7 @@
 <body>
 
 <?php
-$database = "cwcsqlite.db";
+/*$database = "your.db";
 if (file_exists($database))
 	{
 	die("Database already exists!");
@@ -22,27 +22,28 @@ if (file_exists($database))
 $db = new PDO("sqlite:".$database);
 
 //Create table 
-$db->exec("CREATE TABLE IF NOT EXISTS cwcsqlite(
+$db->exec("CREATE TABLE IF NOT EXISTS yourtable(
       id INTEGER PRIMARY KEY,
-	  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL UNIQUE,
+	  #timestamp TIMESTAMP DEFAULT (datetime('now','localtime')) NOT NULL UNIQUE,
       php_self TEXT,
       remote_addr TEXT,
       http_host TEXT,
       request_uri TEXT,
       http_referer TEXT,
-      http_user_agent TEXT,
-      remote_host TEXT,
-	  //country TEXT,
-	  //datime_txt TEXT,
-	  //date_txt TEXT)");
-#timestamp TIMESTAMP DEFAULT (datetime('now','localtime')) NOT NULL UNIQUE,
+      http_user_agent TEXT)");
+
+$db->exec("CREATE INDEX IF NOT EXISTS idx_timestamp ON yourtable (timestamp, id)");
+$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON yourtable (date(timestamp), remote_addr)");
+$db->exec("CREATE INDEX IF NOT EXISTS idx_date_uri ON yourtable (date(timestamp), request_uri)");
+$db->exec("CREATE INDEX IF NOT EXISTS idx_remotehost_requesturi ON yourtable (remote_host, request_uri)");
 $db->close();
 echo date_default_timezone_get()."<br />";
-echo "Unix ".time()."<br />";
+echo "Unix ".time()."<br />";*/
 ?>
 Table0 was created!
 <?php
-$database = "cwcount.db";
+$database = "your1.db";
 if (file_exists($database))
 	{
 	die("Database $database already exists!");
@@ -52,9 +53,14 @@ if (file_exists($database))
 $db = new PDO("sqlite:".$database);
 
 //Create table 
-$db->exec("CREATE TABLE IF NOT EXISTS cwctimport(
+$db->exec("CREATE TABLE IF NOT EXISTS yourtable1(
       http_host,
       request_uri)");
+	  
+/*$db->exec("CREATE INDEX IF NOT EXISTS idx_timestamp ON yourtable1 (timestamp, id)");
+$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON yourtable1 (date(timestamp), remote_addr)");
+$db->exec("CREATE INDEX IF NOT EXISTS idx_date_uri ON yourtable1 (date(timestamp), request_uri)");
+$db->exec("CREATE INDEX IF NOT EXISTS idx_remotehost_requesturi ON yourtable1 (remote_host, request_uri)");*/
 $db->close();
 echo date_default_timezone_get()."<br />";
 echo "Unix ".time()."<br />";

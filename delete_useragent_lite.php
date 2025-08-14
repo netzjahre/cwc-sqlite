@@ -10,7 +10,7 @@
 <body>
 <h1>Cookieless Web Counter <span style="font-size: 15px; font-style: italic"></span></h1>
 Original (v. 20150324) by <a href = "https://github.com/luciomarinelli/cwc"> Lucio Marinelli</a>, modified by JF to meet own requirements
- <br/>&nbsp;
+<br/>&nbsp;
 <?php
 error_reporting(E_ALL);
 require "config.inc.php";
@@ -25,8 +25,7 @@ require "language.inc.php";
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
-					$db->exec("PRAGMA synchronous = NORMAL;");											   
-					$db->exec("PRAGMA journal_mode = TRUNCATE;");
+					$db->exec("PRAGMA journal_mode = WAL;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE '$useragent'");
 					$rows_del = $stmt->rowCount();
 					$db = NULL;
