@@ -304,17 +304,18 @@ echo "<form action = 'delete_check_lite.php' method = 'POST'>";/////////////////
 		}
 		
 	  $db = NULL;
-
+		include "phpself-scriptname.inc.php";
 		echo "<tr style='background-color:#cecece;'>
 			<td>$sitename[$siteid]</td>
 			<td>$visite_odierne</td>
 			<td>$visitatori_odierni</td>
 			<td>$visite_ieri</td>
 			<td>$visitatori_ieri</td>
-			<td><a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
+
+			<td><a href='$myfile?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
 	} // end for ($siteid=1; $siteid<$number_of_sites; $siteid++)/////////
 	echo "</table>";  
   } // end else show the mainpage ///////////////////////////////////////////////////////

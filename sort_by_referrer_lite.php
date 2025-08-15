@@ -84,9 +84,8 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		//open the database
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA synchronous = NORMAL;");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_referer_host_uri_date ON $tablename[$sid] (date(timestamp), http_referer, http_host, request_uri, remote_addr, http_user_agent, id)");
+		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_referer_host_uri_ip_useragent ON $tablename[$sid] (date(timestamp), http_referer, http_host, request_uri, remote_addr, http_user_agent)");
 		//$db->exec("CREATE INDEX IF NOT EXISTS idx_referer_host_uri_date ON $tablename[$sid] (date(timestamp, http_referer, http_host, request_uri))");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri GROUP BY date(timestamp),remote_addr");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_uri ORDER BY date(timestamp),http_host, request_uri");
@@ -154,7 +153,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 			<td style='word-break: break-all; word-wrap: normal;'>$request_uri</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$http_referer</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$http_user_agent</td>";
-			echo "<td><input type='checkbox' name='cbox[$id]'/></td>";
+			echo "<td><input style='transform: scale(2); margin-left:15px;' type='checkbox' name='cbox[$id]'/></td>";
 			//echo "<td>".$i."</td>";
 			$countt= $i - $iminus;
 			#echo "<td>".$countt."</td></tr>";						 								
@@ -281,17 +280,17 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 		}
 		
 	  $db = NULL;
-
+		include "phpself-scriptname.inc.php";
 		echo "<tr style='background-color:#cecece;'>
 			<td>$sitename[$siteid]</td>
 			<td>$visite_odierne</td>
 			<td>$visitatori_odierni</td>
 			<td>$visite_ieri</td>
 			<td>$visitatori_ieri</td>
-			<td><a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
+			<td><a href='$myfile?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
 	} // end for ($siteid=1; $siteid<$number_of_sites; $siteid++)/////////
 	echo "</table>";  
   } // end else show the mainpage ///////////////////////////////////////////////////////

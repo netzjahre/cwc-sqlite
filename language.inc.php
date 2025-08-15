@@ -17,7 +17,6 @@ case 'it': //ITALIAN LANGUAGE
 	//dump page
 	$back="Ritorna alla pagina principale";
 	$timestamp_label="Data & ora";
-	$date_label="Data";
 	$php_self_label="Pagina visitata";
 	$remote_host_label="Translate it";
 	$country_label="Translate it";
@@ -46,11 +45,10 @@ default: //DEFAULT ENGLISH LANGUAGE
 	//dump page
 	$back="Back to the main page";
 	$timestamp_label="Timestamp";
-	$date_label="Date";
 	$php_self_label="php_self";
 	$remote_host_label="Remote Host";
 	$remote_addr_label="IP";
-	$country_label="Cntry";
+	$country_label="Country";
 	$http_host_label="Domain or Subdomain)";
 	$request_uri_label="URL";
 	$http_referer_label="Referrer";

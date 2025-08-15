@@ -1,6 +1,6 @@
  <?php
 //Cookieless Web Counter by Lucio Marinelli, modified by JF to meet own requirements
-//Please see attached GNU GENERAL PUBLIC LICENSE version 3
+//Please see attached GNU GENERAL PUBLIC LICENSE version 3x
 
 error_reporting(E_ALL);
 require "config.inc.php";
@@ -74,9 +74,10 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 		<th>SORT 2<br />$timestamp_label</th>
 		<th style='width:20%'>$remote_host_label</th>
 		<th>$remote_addr_label</th>
+		<th>$country_label</th>
 		<th style='width:3%'>.</th>
 		<!--th style='width:10%'>$http_host_label</th-->
-		<th style='width:27%'>SORT 1 $request_uri_label</th>
+		<th style='width:17%'>SORT 1 $request_uri_label</th>
 		<th style='width:20%'>$http_referer_label</th>
 		<th style='width:20%'>$http_user_agent_label</th>
 		<th>Select to delete</th>
@@ -85,9 +86,8 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 
 		//open the database					 
 		$db = new PDO("sqlite:$dbname");
-		$db->exec("PRAGMA synchronous = NORMAL;");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr, request_uri, http_user_agent, http_referer, http_host, id)");
+		$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip_uri_useragent_referer_host ON $tablename[$sid] (date(timestamp), remote_addr, request_uri, http_user_agent, http_referer, http_host)");
 		//$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON $tablename[$sid] (date(timestamp), remote_addr)");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
 		//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip");
@@ -103,17 +103,17 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 			$aremote = $remote_addr;
 			$timestamp = $row[1];
 			$atime = intval(substr($timestamp,8,2));
-			
 			$remote_addr = htmlentities($row[3],ENT_QUOTES);
 			$remote_host = gethostbyaddr($remote_addr);
+			#$remote_addr = $row[3];
+			#$remote_addr = htmlentities($remote_addr,ENT_QUOTES);
+			$country = htmlentities($row[9],ENT_QUOTES);
 			$id = $row[0];
 			$id = htmlentities($id,ENT_QUOTES);
 			$timestamp = $row[1];
 			$timestamp = htmlentities($timestamp,ENT_QUOTES);
 			$php_self = $row[2];
 			$php_self = htmlentities($php_self,ENT_QUOTES);
-			$remote_addr = $row[3];
-			$remote_addr = htmlentities($remote_addr,ENT_QUOTES);
 			$http_host = $row[4];
 			$http_host = htmlentities($http_host,ENT_QUOTES);
 			$request_uri = $row[5];
@@ -148,12 +148,13 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 			<td style='word-break: break-all; word-wrap: break-word;'>$remote_host</td>";
 			//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
 			echo "<td><a href='https://www.whois.com/whois/$row[3]' target='_blank'>$row[3]</a></td>";
+			echo "<td>$country</td>";
 			echo"
 			<td style='word-break: break-all; word-wrap: normal;'>.</td>
 			<td style='word-break: break-all; word-wrap: normal;'>$row[4]$row[5]</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[6]</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[7]</td>";
-			echo "<td><input type='checkbox' name='cbox[$row[0]]'/></td>";
+			echo "<td><input style='transform: scale(2); margin-left:15px;' type='checkbox' name='cbox[$row[0]]'/></td>";
 			//echo "<td>".$i."</td>";
 			$countt= $i - $iminus;
 			#echo "<td>".$countt."</td></tr>";
@@ -177,4 +178,3 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 ?>
 </body>
 </html>
-

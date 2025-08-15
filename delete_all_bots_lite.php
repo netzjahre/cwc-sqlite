@@ -20,22 +20,28 @@ require "language.inc.php";
 		if(isset ($_POST["botrubber"]))
 			{
 			echo "<br/>".$tablename[$sid]."<br/>";
-			$com = "com";
-			$com = "%$com%";
+			//$com = "com";
+			//$com = "%$com%";
+			$bot = "bot";
+			$bot = "%$bot%";
 			$claude = "ClaudeBot";
 			$claude = "%$claude%";
 			$crawl = "crawl";
 			$crawl = "%$crawl%";
+			//$googlebot = "googlebot";
+			$googlebot = "%googlebot%";
 			}
 			
 try {
     $db = new PDO("sqlite:$dbname");
-	$db->exec("PRAGMA synchronous = NORMAL;");
     $db->exec("PRAGMA journal_mode = TRUNCATE;");
-	$stmt = $db->prepare("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE :com OR http_user_agent LIKE :claude OR http_user_agent LIKE :crawl");
-	$stmt->bindParam(':com', $com, PDO::PARAM_STR);
+	//$stmt = $db->prepare("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE :com OR http_user_agent LIKE :claude OR http_user_agent LIKE :crawl");
+	//$stmt->bindParam(':com', $com, PDO::PARAM_STR);
+	$stmt = $db->prepare("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE :bot OR http_user_agent LIKE :claude OR http_user_agent LIKE :crawl OR remote_host LIKE :googlebot");
+	$stmt->bindParam(':bot', $bot, PDO::PARAM_STR);
     $stmt->bindParam(':claude', $claude, PDO::PARAM_STR);
     $stmt->bindParam(':crawl', $crawl, PDO::PARAM_STR);
+    $stmt->bindParam(':googlebot', $googlebot, PDO::PARAM_STR);
 	$stmt->execute();
 	$rows_del = $stmt->rowCount();
 	}
@@ -51,7 +57,8 @@ echo "<div><a href='cwclite.php'>Back zu main page</a></div>";
 					{
 					$db = new PDO("sqlite:$dbname");
 					$db->exec("PRAGMA journal_mode = TRUNCATE;");
-					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE '$com' OR http_user_agent LIKE '$claude'");
+					//$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE '$com' OR http_user_agent LIKE '$claude'");
+					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_user_agent LIKE '$claude' OR http_user_agent LIKE '$crawl'");
 					$rows_del = $stmt->rowCount();
 					$db = NULL;
 					}

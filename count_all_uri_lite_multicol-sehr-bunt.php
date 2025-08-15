@@ -75,7 +75,7 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 				$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 				$query="DELETE FROM $tablename1[$sid] where http_host=:http_host";
 				$sql=$db->prepare($query);
-				$sql->bindParam(':http_host',$emptyy);//""
+				$sql->bindParam(':http_host',$emptyy);
 				if($sql->execute()){
 					echo "<div class='flex-container'>";
 					echo "Database adjusted, number of empty rows deleted  : ".$sql->rowCount();
@@ -105,17 +105,38 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 					$sum = $row[sum];
 					$total=$total+$sum;
 
-					if (((((intval($sum))%2)==0))){$stile="style= 'background-color:								#cccccc'";} //Light Grey
-					if (((((intval($sum))%3)==0))) {$stile="style= 'background-color:                               aliceblue'";} //#f0f8ff
-					if ((((intval($sum))%5)==0)) {$stile="style= 'background-color:                                 aquamarine'";} //#7fffd4
-					if ((((intval($sum))%7)==0)) {$stile="style= 'background-color:                                 bisque'";} //#ffe4c4
+					if (((((intval($sum))%2)==0))){$stile="style= 'background-color:								#cecece;'";} //Change background
+					//if (((((intval($sum))%2)==0)) && (((intval($sum))%3)==0)){$stile="style= 'background-color:   Gray95'";} //#F2F2F2
+					if (((((intval($sum))%2)==0)) && (((intval($sum))%3)==0)){$stile="style= 'background-color:     lightblue'";} //#add8e6
+					if (((((intval($sum))%2)>0))){$stile="style= 'background-color: 								#779BAB;'";} //Change background
+					if (((((intval($sum))%3)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color: burlywood'";} //#deb887
+					if (((((intval($sum))%3)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:   #cc9999;'";} //Change background
+					/*if (((((intval($sum))%3)>0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:    darkseagreen'";} //#8fbc8f
+					if (((((intval($sum))%3)>2))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:    aquamarine;'";} //#7fffd4
+					if (((((intval($sum))%4)==0))  && (((intval($sum))%5)==0)) {$stile="style= 'background-color:   lightsalmon;'";}
+					if (((((intval($sum))%4)==1))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:   khaki'";} //#f0e68c
+					if (((((intval($sum))%4)==1))  && (((intval($sum))%2)<>0) && (((intval($sum))%5)>1) && ($sum>50)) {$stile="style= 'background-color: beige'";} //#f5f5dc
+					if (((((intval($sum))%4)<>0)) && (((intval($sum))%2)==0)) {$stile="style= 'background-color:    lavender'";} //#e6e6fa
+					if (((((intval($sum))%4)<>0)) && (((intval($sum))%2)==0) && ($sum>70)) {$stile="style= 'background-color:    lavenderblush'";} //#fff0f5
+					*/
+					
+					if ((((intval($sum))%5)==0)) {$stile="style= 'background-color:   lightcoral'";} //#f08080
+					//if (((((intval($sum))%5)>1))) {$stile="style= 'background-color:    aliceblue'";} //aliceblue=#f0f8ff					
+
+					#if (((((intval($sum))%5)==0)) && (((intval($sum))%4)<>0)) {$stile="style= 'background-color:    lightgreen'";} //#90ee90
+					#if (((((intval($sum))%5)==0))  && (((intval($sum))%2)<>0)) {$stile="style= 'background-color:   lightsalmon'";} //#ffa07a
+					if (((((intval($sum))%5)>1))  && (((intval($sum))%6)==0)) {$stile="style= 'background-color:    aliceblue'";} //aliceblue=#f0f8ff
+					//if (((((intval($sum))%6)>1))  && (((intval($sum))%2)<>0) && (((intval($sum))%3)<>0)) {$stile="style= 'background-color: bisque'";} //#ffe4c4
+					//if (((((intval($sum))%6)==0))  && (((intval($sum))%4)<>0)) {$stile="style= 'background-color:   cornsilk'";} //#fff8dc
+					if ((((intval($sum))%7)==0))							   {$stile="style= 'background-color:   mediumaquamarine'";} //#66cdaa
+					
 					if ($sum==1)											   {$stile="style= 'background-color: 	#779BAB;'";} //Change background
-					if ((((intval($sum))%11)==0))							   {$stile="style= 'background-color:   burlywood'";} //#deb887
-					if ((((intval($sum))%13)==0))							   {$stile="style= 'background-color:   lightblue'";} //#add8e6
-					if ((intval($sum)>13) && isPrime(intval($sum))==true) {$stile="style= 'background-color:        #B4EEB4'";} //DarkSeaGreen2
+					if ((((intval($sum))%11)==0))							   {$stile="style= 'background-color:   aqua'";} //#00ffff
+					if ((((intval($sum))%13)==0))							   {$stile="style= 'background-color:   cornflowerblue'";} //#6495ed
+					if ((intval($sum)>13) && isPrime(intval($sum))==true) {$stile="style= 'background-color:   #779BAB;'";};
 					if (($prevsum <> $sum) && ($stile2==$stile))
 						{
-						$stile="style= 'background-color:															lightpink;'"; //#ffb6c1
+						$stile="style= 'background-color:   gold;'"; //#ffd700
 						$stile2=$stile;
 						}
 					if ($sum==$prevsum)

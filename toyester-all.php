@@ -120,7 +120,7 @@
 							else{
 								echo '-';
 								}
-						$db = NULL; 
+						$db = NULL;
 						//////////////////////////////////////////////////////////////////////////
 						$result = 0;
 						$numrows = 0;
@@ -139,6 +139,7 @@
 						echo $wal_status."<br />";
 						//counting values////////////////////////////////////////////////
 						$db = NULL;
+						include "phpself-scriptname.inc.php";
 						echo "<tr style='background-color:#cecece;'>
 							  <td>$sitename[$siteid]</td>
 							  <td>$visite_odierne</td>
@@ -146,10 +147,10 @@
 							  <td>$visite_ieri</td>
 							  <td>$visitatori_ieri</td>";
 						//end counting values////////////////////////////////////////////
-						echo "<td><a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
-								  <a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
-								  <a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
-								  <a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
+						echo "<td><a href='$myfile?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
+								  <a href='$myfile?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
+								  <a href='$myfile?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
+								  <a href='$myfile?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
 						} // end for ($siteid=1; $siteid<$number_of_sites; $siteid++)
 						////////////////////////////////////////////////////////////////////////////////////
 					echo "</table>";  

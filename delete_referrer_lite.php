@@ -28,8 +28,6 @@ require "language.inc.php";
 				try
 					{
 					$db = new PDO("sqlite:$dbname");
-
-					$db->exec("PRAGMA synchronous = NORMAL;");
 					$db->exec("PRAGMA journal_mode = TRUNCATE;");
 					$stmt = $db->query("DELETE FROM $tablename[$sid] WHERE http_referer LIKE '$reference'");
 					$rows_del = $stmt->rowCount();

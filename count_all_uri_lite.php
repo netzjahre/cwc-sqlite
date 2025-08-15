@@ -59,7 +59,7 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 					</tr>";
 				//open the database////////////////////////////
 				$db = new PDO("sqlite:$dbname1");
-				$db->exec("PRAGMA synchronous = NORMAL;");
+				// $db->exec("PRAGMA synchronous = NORMAL;");
 				$db->exec("PRAGMA journal_mode = TRUNCATE;");
 				//www.plus2net.com/php_tutorial/sqlite-delete.php
 				$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
@@ -131,8 +131,8 @@ if ($_GET[action]=="dump" && is_numeric($_GET[sid])) {
 				$db = NULL;
 				///////////////////////////////////////////////////////////////////////
 				echo "<div class='flex-container'>";
-				echo "<div><a href='cwclite.php'>$back</a></div>";
-				echo "<div><a href='count_all_uri_lite_multicol.php'>multicolor display</a></div>";																					   
+				echo "<div class='within-flex'><a href='cwclite.php'>$back</a></div>";
+				echo "<div class='within-flex'><a href='count_all_uri_lite_multicol.php'>multicolor display</a></div>";																					   
 				echo "</div>";
 				} // end if ($_GET[action]=="dump"...//////////////////////////////////////
 					else{ //show the main page

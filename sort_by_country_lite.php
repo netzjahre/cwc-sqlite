@@ -16,19 +16,19 @@ function is_bot($text) {
 	return false;
 }
 
-/*get site id for <TITLE> & dump page, preventing injection
+//get site id for <TITLE> & dump page, preventing injection
 if ($_GET[action]=="dump" && is_numeric($_GET['sid']))
 	{
 	$siteid=$_GET['sid'];
 	$siteid=htmlentities($siteid,ENT_QUOTES);
 	}else{
 	$siteid=0;
-	}*/
+	}
 ?>
 
 <html>
 <head>
-<title>Cookieless Web Counter - <?=$sitename[$sid] ?></title>
+<title>Cookieless Web Counter - <?=$sitename[$siteid] ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 <meta name="robots" content="noindex"/>
 <link rel="stylesheet" type="text/css" href="style.css"/>
@@ -47,7 +47,7 @@ require "language.inc.php";
 $number_of_sites=count($sitename)+1;
 $ipcount=1;
 
-//dump last visits///////////////////////////////////////////////////////////////////////
+//dump last visits
 if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 	
 	
@@ -59,7 +59,7 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 	if (is_numeric($_GET[n])) $n_vis=$_GET[n]+1;
 	else die ("$attack");
 	
-	echo "<h2>$sitename[$sid]</h2>";
+	echo "<h2>$sitename[$siteid]</h2>";
 	echo "<h3>$last_visits ($_GET[n])</h3><table border='0px' style='font-size: 12px' width='100%'>";
 	#echo "<h3>$last_visits ($_GET[n])</h3><table border='0px' style='font-size: 12px'>";	
 
@@ -75,8 +75,8 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 		<th style='width:20%'>$remote_host_label</th>
 		<th>$remote_addr_label</th>
 		<th>SORT BY $country_label</th>
-		<!--th style='width:3%'>.</th-->
-		<th style='width:10%'>$http_host_label</th>
+		<th style='width:3%'>.</th>
+		<!--th style='width:10%'>$http_host_label</th-->
 		<th style='width:17%'>$request_uri_label</th>
 		<th style='width:20%'>$http_referer_label</th>
 		<th style='width:20%'>$http_user_agent_label</th>
@@ -87,28 +87,45 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 		//open the database					 
 		$db = new PDO("sqlite:$dbname");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$db->exec("CREATE INDEX IF NOT EXISTS idx_country ON $tablename[$sid] (date_txt, country, remote_addr, request_uri)");
-		$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_country ORDER BY date_txt, country, remote_addr, request_uri");
+		$db->exec("CREATE INDEX IF NOT EXISTS idx_country ON $tablename[$sid] (date(timestamp), country, remote_addr, request_uri)");
+		$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), country, remote_addr, request_uri");
 
 		$i=1;
 		$countt=0;
 		$iminus=0;
 		foreach($result as $row)
 		{
+
 			if ($i == $n_vis){break;}
-			//$timestamp = htmlspecialchars($row['timestamp'] ,ENT_QUOTES);						   												   
-			//$atime = intval(substr($timestamp,8,2));
-			$atime = htmlspecialchars($row[date_txt] ,ENT_QUOTES);
-			/*
+			$aremote = $remote_addr;
+			$timestamp = $row[1];
+			$atime = intval(substr($timestamp,8,2));
+			$remote_addr = htmlentities($row[3],ENT_QUOTES);
+			$remote_host = gethostbyaddr($remote_addr);
+			#$remote_addr = $row[3];
+			#$remote_addr = htmlentities($remote_addr,ENT_QUOTES);
+			$country = htmlentities($row[9],ENT_QUOTES);
+			$id = $row[0];
+			$id = htmlentities($id,ENT_QUOTES);
+			$timestamp = $row[1];
+			$timestamp = htmlentities($timestamp,ENT_QUOTES);
+			$php_self = $row[2];
+			$php_self = htmlentities($php_self,ENT_QUOTES);
+			$http_host = $row[4];
+			$http_host = htmlentities($http_host,ENT_QUOTES);
+			$request_uri = $row[5];
+			$request_uri = htmlentities($request_uri,ENT_QUOTES);
+			$http_referer = $row[6];
+			$http_referer = htmlentities($http_referer,ENT_QUOTES);
+			$http_user_agent = $row[7];
+			$http_user_agent = htmlentities($http_user_agent,ENT_QUOTES);
 			if ($bremote==$remote_addr && $remote_addr<>"")
 			   {$ipcount = $ipcount+1;}
-		    */
-			$remote_addr = htmlspecialchars($row['remote_addr'], ENT_QUOTES);
 			if ( $atime <> $btime && $i>1)
 			   {
 				$iminus=$i-1;
 				$line = "<hr style='height:3px;background-color:#000000;'/>";
-				echo "<tr><td>$line</td><td>"."count = ".htmlspecialchars($countt, ENT_QUOTES)."</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</tr>";
+				echo "<tr><td>$line</td><td>"."count = ".$countt."</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</tr>";
 			   }
 			if (((($i)%2)==0)) {$stile="style= 'background-color: #cecece;'";} //Change background
 			if (((($i)%2)==0) && is_bot($row[7])) {$stile="style= 'background-color: #cecece;color: white'";} //Change background and text
@@ -124,33 +141,32 @@ if ($_GET['action']=="dump" && $_GET['id']<$number_of_sites) {
 				}
 			*/
 			echo "<tr $stile>";
-			echo "<td>".htmlspecialchars($row['id'], ENT_QUOTES)."</td>
-			<td>".htmlspecialchars($row['datime_txt'], ENT_QUOTES)."</td>
-			<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['remote_host'], ENT_QUOTES)."</td>";
-			//echo "<td><a href='https://get.geojs.io/v1/ip/geo/".htmlspecialchars($row['remote_addr']).".json' target='_blank'>".htmlspecialchars($row['remote_addr'])."</a></td>";
-			echo "<td><a href='geo.php?ip=$remote_addr' target='_blank'>$remote_addr</a></td>";
+			echo "<td>$row[0]</td>
+			<td>$row[1]</td>
+			<td style='word-break: break-all; word-wrap: break-word;'>$remote_host</td>";
+			//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
+			echo "<td><a href='https://www.whois.com/whois/$row[3]' target='_blank'>$row[3]</a></td>";
+			echo "<td>$country</td>";
 			echo"
-			<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['country'], ENT_QUOTES)."</td>
-			<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['http_host'], ENT_QUOTES)."</td>
-			<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['request_uri'], ENT_QUOTES)."</td>
-			<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['referer'], ENT_QUOTES)."</td>
-			<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['http_user_agent'], ENT_QUOTES)."</td>";
-			$id = htmlspecialchars($row['id'], ENT_QUOTES);//von chatGPT empfohlen
-			echo "<td><input style='transform: scale(2); margin-left:15px;' type='checkbox' name=\"cbox[$id]\" /></td>";//von chatGPT empfohlen
-
+			<td style='word-break: break-all; word-wrap: normal;'>.</td>
+			<td style='word-break: break-all; word-wrap: normal;'>$row[4]$row[5]</td>
+			<td style='word-break: break-all; word-wrap: break-word;'>$row[6]</td>
+			<td style='word-break: break-all; word-wrap: break-word;'>$row[7]</td>";
+			echo "<td><input style='transform: scale(2); margin-left:15px;' type='checkbox' name='cbox[$row[0]]'/></td>";
 			//echo "<td>".$i."</td>";
 			$countt= $i - $iminus;
-			echo "<td>".htmlspecialchars($countt, ENT_QUOTES)."</td></tr>";
-			//echo "<td>".$ipcount."</td></tr>";
+			echo "<td>".$countt."</td></tr>";
+			#echo "<td>".$ipcount."</td></tr>";
 			$i=$i+1;
-			//$Datumm = substr($timestamp,0,10);
-			//$bremote = $remote_addr;
-			//$btime = intval(substr($timestamp,8,2));
-			$btime = htmlspecialchars($row[date_txt] ,ENT_QUOTES);
+			$Datumm = substr($timestamp,0,10);
+			$bremote = $remote_addr;
+			$btime = intval(substr($timestamp,8,2));
 		} // end foreach($result as $row)
-		$db = NULL;// close the database connection
-	echo "</table>";///////////////////////////////////////////////////////////////////////////////
-
+		// close the database connection
+		//$db->exec("DROP INDEX idx_date_ip");
+		$db = NULL;
+	echo "</table>";
+///////////////////////////////////////////////////////////////////////////////
 	include "footer.inc.php";
     } // end if ($_GET[action]=="dump"...	
 	

@@ -17,12 +17,18 @@ function is_bot($text) {
 }
 
 //get site id for <TITLE> & dump page, preventing injection
-///////////////////////////////////////////////////////////
+if ($_GET[action]=="dump" && is_numeric($_GET[sid]))
+	{
+	$siteid=$_GET[sid];
+	$siteid=htmlentities($siteid,ENT_QUOTES);
+	}else{
+	$siteid=0;
+	}
 ?>
 
 <html>
 <head>
-<title>Cookieless Web Counter - <?=$sitename[$sid] ?></title>
+<title>Cookieless Web Counter - <?=$sitename[$siteid] ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 <meta name="robots" content="noindex"/>
 <link rel="stylesheet" type="text/css" href="style.css"/>
@@ -36,7 +42,6 @@ function is_bot($text) {
 <?php
 
 require "language.inc.php";
-
 //count the number of sites
 $number_of_sites=count($sitename)+1;
 $ipcount=1;
@@ -44,14 +49,14 @@ $ipcount=1;
 //dump last visits
 if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	
-
+	
 	//show last 50-100-200-all(n) records for the selected site
 	echo "<form action = 'expimp_temp_csv_check_lite.php' method = 'POST'>";////////////////////////////////////////////////////
 		//get number of visits preventing injection
 		if (is_numeric($_GET[n])) $n_vis=$_GET[n]+1;
 		else die ("$attack");
 		
-		echo "<h3>$sitename[$sid]</h3>";
+		echo "<h3>$sitename[$siteid]</h3>";
 		//echo "<h3>$last_visits ($_GET[n])</h3><table border='0px' style='font-size: 12px' width='100%'>";
 		//echo "<h3>$last_visits ($_GET[n])</h3><table border='0px' style='font-size: 12px'>";	
 
@@ -63,42 +68,70 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 		echo "<table style='border-spacing:5px;'>";
 		echo "<tr style='background-color:#a2a5a7;text-align: left;'>
 			<th>Id</th>
-			<th>SORT1<br>$date_label</th>
-			<th>$remote_host_label</th>
+			<th>SORT BY<br />$timestamp_label</th>
+			<th style='width:20%'>$remote_host_label</th>
 			<th>$remote_addr_label</th>
-			<th>SORT3<br>$country_label</th>
-			<th>$http_host_label</th>
-			<th>$request_uri_label</th>
-			<th>SORT2<br>$http_referer_label</th>
+			<th>$country_label</th>
+			<th style='width:10%'>$http_host_label</th>
+			<th style='width:20%'>$request_uri_label</th>
+			<th style='width:20%'>$http_referer_label</th>
 			<th style='width:20%'>$http_user_agent_label</th>
-			<th>Check<br>to<br>export<br>to<br>temp.<br>csv</th>
-			<th style='width:3%'>Daily Count</th>
+			<th>Check to export to temporary csv</th>
+			<th>Daily Count</th>
 			</tr>";	
 
 			//open the database
 			$db = new PDO("sqlite:$dbname");
 			$db->exec("PRAGMA journal_mode = TRUNCATE;");
-			$db->exec("CREATE INDEX IF NOT EXISTS idx_date_referer_country ON $tablename[$sid] (date_txt, http_referer, country, remote_addr, request_uri)");
-			$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_referer_country ORDER BY date_txt, http_referer, country, remote_addr, request_uri");
+			#$db->exec("CREATE INDEX IF NOT EXISTS idx_many ON cwcsqlite (timestamp,remote_host,remote_addr,request_uri,http_user_agent)");
+			#$db->exec("CREATE INDEX IF NOT EXISTS idx_timestamp ON cwcsqlite (timestamp, id)");
+			#$db->exec("CREATE INDEX IF NOT EXISTS idx_date_ip ON cwcsqlite (date(timestamp), remote_addr)");
+			#$db->exec("CREATE INDEX IF NOT EXISTS idx_date_uri ON cwcsqlite (date(timestamp), request_uri)");
+			$db->exec("CREATE INDEX IF NOT EXISTS idx_date_referer_country_host_uri ON cwcsqlite (date(timestamp), http_referer, country, http_host, request_uri)");
+			#$db->exec("CREATE INDEX IF NOT EXISTS idx_remoteaddr_requesturi ON cwcsqlite (remote_addr, request_uri)");
+			#$db->exec("CREATE INDEX IF NOT EXISTS idx_remotehost_requesturi ON cwcsqlite (remote_host, request_uri)");
+			#$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_date_ip ORDER BY date(timestamp), remote_addr");
+			#$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), remote_addr")
+			$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), http_referer, country, http_host, request_uri");
+			#$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY date(timestamp), http_host, http_referer, request_uri");
 			$i=1;
 			$countt=0;
 			$iminus=0;
 			foreach($result as $row)
 			{
+
 				if ($i == $n_vis){break;}
-				$remote_addr = htmlspecialchars($row['remote_addr']);														 
-				//$aremote = $remote_addr;
-				//$aremote = htmlspecialchars($row['remote_addr'], ENT_QUOTES);
-				//$timestamp = $row[1];
-				$atime = htmlspecialchars($row['date_txt'], ENT_QUOTES);
-				//if ($bremote==htmlspecialchars($row['remote_addr']) && htmlspecialchars($row['remote_addr'], ENT_QUOTES)<>"")
+				$aremote = $remote_addr;
+				$timestamp = $row[1];
+				$atime = intval(substr($timestamp,8,2));
+				
+				$remote_addr = htmlentities($row[3],ENT_QUOTES);
+				$remote_host = gethostbyaddr($remote_addr);
+				$id = $row[0];
+				$id = htmlentities($id,ENT_QUOTES);
+				$timestamp = $row[1];
+				$timestamp = htmlentities($timestamp,ENT_QUOTES);
+				$php_self = $row[2];
+				$php_self = htmlentities($php_self,ENT_QUOTES);
+				$remote_addr = $row[3];
+				$remote_addr = htmlentities($remote_addr,ENT_QUOTES);
+				$country = htmlentities($row[9],ENT_QUOTES);
+				$http_host = $row[4];
+				$http_host = htmlentities($http_host,ENT_QUOTES);
+				$request_uri = $row[5];
+				$request_uri = htmlentities($request_uri,ENT_QUOTES);
+				$http_referer = $row[6];
+				$http_referer = htmlentities($http_referer,ENT_QUOTES);
+				$http_user_agent = $row[7];
+				$http_user_agent = htmlentities($http_user_agent,ENT_QUOTES);
+				if ($bremote==$remote_addr && $remote_addr<>"")
 				   {$ipcount = $ipcount+1;}
 				if ( $atime <> $btime && $i>1)
 				   {
 					$iminus=$i-1;
 					$line = "<hr style='height:3px;background-color:#000000;'/>";
 					echo "<tr><td>$line</td><td>"."count = ".$countt."</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</td><td>$line</tr>";
-					}
+				   }
 				if (((($i)%2)==0)) {$stile="style= 'background-color: #cecece;'";} //Change background
 				if (((($i)%2)==0) && is_bot($row[7])) {$stile="style= 'background-color: #cecece;color: white'";} //Change background and text
 				if (((($i)%2)>0)) {$stile="style= 'background-color: #779BAB;'";} //Change background
@@ -112,27 +145,29 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 					echo "</tr>";
 					}
 				echo "<tr $stile>";
-				echo "<td>".htmlspecialchars($row['id'], ENT_QUOTES)."</td>
-				<td>".htmlspecialchars($row['date_txt'], ENT_QUOTES)."</td>
-				<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['remote_host'])."</td>";
-
-				//echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>".htmlspecialchars($row['remote_addr'])."</td>";
-				echo "<td><a href='geo.php?ip=$remote_addr' target='_blank'>$remote_addr</a></td>";																	   
-				echo "<td>".htmlspecialchars($row['country'], ENT_QUOTES)."</td>";
+				echo "<td>$row[0]</td>
+				<td>$row[1]</td>
+				<td style='word-break: break-all; word-wrap: break-word;'>$remote_host</td>";
+				//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
+				//echo "<td><a href='https://www.whois.com/whois/$row[3]' target='_blank'>$row[3]</a></td>";
+				echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>$remote_addr</a></td>";
+				//Country-->
+				echo "<td>$country</td>";
 				echo"
-				<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['http_host'], ENT_QUOTES)."</td>
-				<td style='word-break: break-all; word-wrap: normal;'>".htmlspecialchars($row['request_uri'], ENT_QUOTES)."</td>
-				<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['http_referer'], ENT_QUOTES)."</td>
-				<td style='word-break: break-all; word-wrap: break-word;'>".htmlspecialchars($row['http_user_agent'], ENT_QUOTES)."</td>";
+				<td style='word-break: break-all; word-wrap: normal;'>$row[4]</td>
+				<td style='word-break: break-all; word-wrap: normal;'>$row[5]</td>
+				<td style='word-break: break-all; word-wrap: break-word;'>$row[6]</td>
+				<td style='word-break: break-all; word-wrap: break-word;'>$row[7]</td>";
+				
 				echo "<td style='background-color:#f0e68c'><input style='transform:scale(2); margin-left:15px;' type='checkbox' name='cbox[$row[0]]'/></td>";/////////////////////////////////////////
 				//echo "<td>".$i."</td>";
 				$countt= $i - $iminus;
 				#echo "<td>".$countt."</td></tr>";
 				echo "<td>".$ipcount."</td></tr>";
 				$i=$i+1;
-				//$Datumm = substr($timestamp,0,10);
-				//$bremote = htmlspecialchars($row['remote_addr'])
-				$btime = htmlspecialchars($row['date_txt'], ENT_QUOTES);
+				$Datumm = substr($timestamp,0,10);
+				$bremote = $remote_addr;
+				$btime = intval(substr($timestamp,8,2));
 			} // end foreach($result as $row)
 			$db = NULL;
 		echo "</table>";
@@ -159,7 +194,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 	echo "<tr style='text-align: left; background-color: #a2a5a7'><th>$site_label</th><th>$today_visits</th><th>$today_visitors</th><th>$yesterday_visits</th><th>$yesterday_visitors</th><th>$last_visits</th></tr>";
 
 	
-	for ($sid=1; $sid<$number_of_sites; $sid++)
+	for ($siteid=1; $siteid<$number_of_sites; $siteid++)
 	{
  
 	  //count today's visits/////////////////////
@@ -188,7 +223,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		$db = new PDO("sqlite:$dbname");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$sid] WHERE timestamp LIKE ? GROUP BY remote_addr");
+		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY remote_addr");
 		$stmt->bindValue(1,$today.'%',SQLITE3_TEXT);
 		$stmt->execute();
 		if ($data = $stmt->fetch()) {
@@ -229,7 +264,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 
 		$db = new PDO("sqlite:$dbname");
 		$db->exec("PRAGMA journal_mode = TRUNCATE;");
-		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$sid] WHERE timestamp LIKE ? GROUP BY remote_addr");
+		$stmt = $db->prepare("SELECT remote_addr FROM $tablename[$siteid] WHERE timestamp LIKE ? GROUP BY remote_addr");
 		$stmt->bindValue(1,$yesterday.'%',SQLITE3_TEXT);
 		$stmt->execute();
 		if ($data = $stmt->fetch()) {
@@ -255,18 +290,18 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 		}
 		
 	  $db = NULL;
-		require "phpself-scriptname.inc.php";
+		include "phpself-scriptname.inc.php";
 		echo "<tr style='background-color:#cecece;'>
-			<td>$sitename[$sid]</td>
+			<td>$sitename[$siteid]</td>
 			<td>$visite_odierne</td>
 			<td>$visitatori_odierni</td>
 			<td>$visite_ieri</td>
 			<td>$visitatori_ieri</td>";
-		echo "<td><a href='$myfile?id=$sid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;";
-		echo "<a href='$myfile?id=$sid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;";
-		echo "<a href='$myfile?id=$sid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;";
-		echo "<a href='$myfile?id=$sid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
-	} // end for ($sid=1; $sid<$number_of_sites; $sid++)/////////
+		echo "<td><a href='$myfile?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;";
+		echo "<a href='$myfile?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;";
+		echo "<a href='$myfile?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;";
+		echo "<a href='$myfile?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
+	} // end for ($siteid=1; $siteid<$number_of_sites; $siteid++)/////////
 	echo "</table>";  
   } // end else show the mainpage ///////////////////////////////////////////////////////
 ?>

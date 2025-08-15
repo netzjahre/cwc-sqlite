@@ -1,6 +1,7 @@
  <?php
 	//Cookieless Web Counter by Lucio Marinelli, modified by JF to meet own requirements
 	//Please see attached GNU GENERAL PUBLIC LICENSE version 3
+	//tld. and uri in same column in opposite to cwc.php
 	error_reporting(E_ALL);
 	require "config.inc.php";
 	//Function to detect bots
@@ -14,8 +15,7 @@
 		return false;
 		}
 	//get site id for <TITLE> & dump page, preventing injection
-	if ($_GET['action']=="dump" && is_numeric($_GET['sid']))
-		{
+	if ($_GET['action']=="dump" && is_numeric($_GET['sid'])) {
 		$siteid=$_GET['sid'];
 		$siteid=htmlentities($siteid,ENT_QUOTES);
 		}
@@ -25,8 +25,7 @@
 ?>
 <html>
 	<head>
-		<!--title>Cookieless Web Counter - <?=$sitename[$siteid] ?></title->
-		<title>Cookieless Web Counter - <?=$sitename[$sid] ?></title>
+		<title>Cookieless Web Counter - <?=$sitename[$siteid] ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 		<!--meta name="viewport" content="width=device-width, initial-scale=1.0/-->
 		<meta name="robots" content="noindex"/>
@@ -52,15 +51,14 @@
 				//get number of visits preventing injection
 				if (is_numeric($_GET['n'])) $n_vis=$_GET['n']+1;
 					else die ("$attack");
-				//echo "<h2>$sitename[$siteid]</h2>";
-				echo "<h2>$sitename[$sid]</h2>";
+				echo "<h2>$sitename[$siteid]</h2>";
 				//echo "<h3>$last_visits ($_GET['n'])</h3><table border='0px' style='font-size: 12px' width='100%'>";
 				//echo "<h3>$last_visits ($_GET['n'])</h3><table border='0px' style='font-size: 12px'>";	
 				echo "<div class='flex-container'>";
 				//echo "<div class='within-flex'><a href='$myfile'>$back</a></div>";
+				echo "<div class='within-flex'><a href='$myfile'>$back</a></div>";
 				echo "<div class='within-flex'><a href='sort_by_ip_lite.php'>Sort list by IP</a></div>";
 				echo "<div class='within-flex'><a href='sort_by_uri_lite.php'>Sort list by URL</a></div>";
-				echo "<div class='within-flex'><a href='sort_by_referrer_lite.php'>Sort list by referrer</a></div>";
 				echo "<div class='within-flex'><a href='count_all_uri_lite.php'>Archive of exported visit data</a></div>";
 				echo "</div>";
 				echo'<div id = "wrapper">';	
@@ -70,10 +68,9 @@
 					  <th>SORT BY<br />$timestamp_label</th>
 					  <th style='width:20%'>$remote_host_label</th>
 					  <th>$remote_addr_label</th>
-					  <th>$country_label</th>
-					  <!--th style='width:3%'>.</th-->
-					  <th style='width:10%'>$http_host_label</th>
-					  <th style='width:20%'>$request_uri_label</th>
+					  <th style='width:3%'>.</th>
+					  <!--th style='width:10%'>$http_host_label</th-->
+					  <th style='width:27%'>$request_uri_label</th>
 					  <th style='width:20%'>$http_referer_label</th>
 					  <th style='width:20%'>$http_user_agent_label</th>
 					  <th>Select to delete</th>
@@ -82,7 +79,8 @@
 				//open the database
 				$db = new PDO("sqlite:$dbname");
 				$db->exec("PRAGMA journal_mode = TRUNCATE;");
-				$db->exec("CREATE INDEX IF NOT EXISTS idx_timestamp ON cwcsqlite (date(timestamp))");
+				$db->exec("CREATE INDEX IF NOT EXISTS idx_timestamp_id ON cwcsqlite (timestamp, id)");
+				//$result = $db->query("SELECT * FROM $tablename[$sid] INDEXED BY idx_timestamp_id ORDER BY timestamp ASC");
 				$result = $db->query("SELECT * FROM $tablename[$sid] ORDER BY timestamp ASC");
 				$i=1;
 				$countt=0;
@@ -90,22 +88,20 @@
 				foreach($result as $row) {
 						if ($i == $n_vis){break;}
 						$timestamp = $row[1];
-						$timestamp = htmlentities($timestamp,ENT_QUOTES);
 						$a = intval(substr($timestamp,8,2));
 						$remote_addr = htmlentities($row[3],ENT_QUOTES);
 						$remote_host = $row[8];
 						$remote_host = htmlentities($remote_host,ENT_QUOTES);
-						$country = htmlentities($row[9],ENT_QUOTES);											   
 						$id = $row[0];
 						$id = htmlentities($id,ENT_QUOTES);
+						$timestamp = $row[1];
+						$timestamp = htmlentities($timestamp,ENT_QUOTES);
 						$php_self = $row[2];
 						$php_self = htmlentities($php_self,ENT_QUOTES);
 						$remote_addr = $row[3];
 						$remote_addr = htmlentities($remote_addr,ENT_QUOTES);
 						$http_host = $row[4];
 						$http_host = htmlentities($http_host,ENT_QUOTES);
-						//$country = $row[9];
-						//$country = htmlentities($country,ENT_QUOTES);
 						$request_uri = $row[5];
 						$request_uri = htmlentities($request_uri,ENT_QUOTES);
 						$http_referer = $row[6];
@@ -122,33 +118,18 @@
 						if (((($i)%2)>0)) {$stile="style= 'background-color: #779BAB;'";} //Change background
 						if (((($i)%2)>0) && is_bot($http_user_agent)) {$stile="style= 'background-color: #779BAB; color: white'";} //Change background and text
 						echo "<tr $stile>";
-						//Id//
 						echo "<td>$id</td>
-						<!--SORT BY Timestamp-->
 						<td>$timestamp</td>
-						<!--Remote Host-->
 						<td style='word-break: break-all; word-wrap: break-word;'>$remote_host</td>";
 						//$muster = "/^(\w{4}:{1}){7}(^\w{4})$/";
-						//IP-->
-						//echo "<td><a href='https://www.whois.com/whois/$remote_addr' target='_blank'>$remote_addr</a></td>";
-						echo "<td><a href='https://get.geojs.io/v1/ip/geo/$remote_addr.json' target='_blank'>$remote_addr</a></td>";
-						//Country-->
-						echo "<td>$country</td>";
+						echo "<td><a href='https://www.whois.com/whois/$remote_addr' target='_blank'>$remote_addr</a></td>";
 						echo"
-							<!--td style='word-break: break-all; word-wrap: normal;'>$country</td-->
-							<!--td style='word-break: break-all; word-wrap: normal;'>.</td-->
-							<!--Domain or Subdomain-->
-							<td style='word-break: break-all; word-wrap: normal;'>$http_host</td>
-							<!--URL-->
-							<td style='word-break: break-all; word-wrap: normal;'>$request_uri</td>
-							<!--Referrer-->
+							<td style='word-break: break-all; word-wrap: normal;'>.</td>
+							<td style='word-break: break-all; word-wrap: normal;'>$http_host$request_uri</td>
 							<td style='word-break: break-all; word-wrap: break-word;'>$http_referer</td>
-							<!--User Agent-->
 							<td style='word-break: break-all; word-wrap: break-word;'>$http_user_agent</td>";
-						//Select to delete
-						echo "<td><input style='transform: scale(2); margin-left:15px;' type='checkbox' name='cbox[$id]'/></td>";
+						echo "<td><input type='checkbox' name='cbox[$id]'/></td>";
 						//echo "<td>".$i."</td>";
-						//Daily Count-->
 						$countt= $i - $iminus;
 						echo "<td>".$countt."</td></tr>";
 						$i=$i+1;
@@ -162,7 +143,7 @@
 			// end dump last visits/////////////////////////////////////////////////////////////////////
 
 			else{ //show the main page
-				include "toyester.inc.php";
+					include "toyester.inc.php";
 			} // end else show the mainpage
 		?>
 	</body>

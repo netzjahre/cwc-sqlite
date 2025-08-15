@@ -149,7 +149,7 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[6]</td>
 			<td style='word-break: break-all; word-wrap: break-word;'>$row[7]</td>";
 			
-			echo "<td style='background-color:#f0e68c'><input type='checkbox' name='cbox[$row[0]]'/></td>";/////////////////////////////////////////
+			echo "<td style='background-color:#f0e68c'><input style='transform:scale(2); margin-left:15px;' type='checkbox' name='cbox[$row[0]]'/></td>";/////////////////////////////////////////
 			//echo "<td>".$i."</td>";
 			$countt= $i - $iminus;
 			#echo "<td>".$countt."</td></tr>";
@@ -300,16 +300,17 @@ if ($_GET[action]=="dump" && $_GET[id]<$number_of_sites) {
 		}
 		
 	  $db = NULL;
+		include "phpself-scriptname.inc.php";
 		echo "<tr style='background-color:#cecece;'>
 			<td>$sitename[$siteid]</td>
 			<td>$visite_odierne</td>
 			<td>$visitatori_odierni</td>
 			<td>$visite_ieri</td>
 			<td>$visitatori_ieri</td>
-			<td><a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
-				<a href='$_SERVER[PHP_SELF]?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
+			<td><a href='$myfile?id=$siteid&amp;action=dump&amp;n=50'>50</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=100'>100</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=200'>200</a>&nbsp;&nbsp;
+				<a href='$myfile?id=$siteid&amp;action=dump&amp;n=$numrows'>all</a></td></tr>";
 	} // end for ($siteid=1; $siteid<$number_of_sites; $siteid++)/////////
 	echo "</table>";  
   } // end else show the mainpage ///////////////////////////////////////////////////////

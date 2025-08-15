@@ -3,7 +3,7 @@
 	//Site ID: choose unique consecutive ID starting from 1 (eg. 1, 2, 3, etc) 
 	$sid=1;
 	//Your site label
-	$sitename[$sid]="netzjahre.com";
+	$sitename[$sid]="your_site.tld";
 	//Your database
 	$dbname="cwcsqlite.db";
 	//Ignore this database
@@ -13,6 +13,6 @@
 	//Ignore this tablename
 	$tablename1[$sid]="cwctimport";
 	//Set your time zone
-	date_default_timezone_set('Europe/Berlin');
-	//date_default_timezone_set('Europe/London');
+	date_default_timezone_set('X/Y');
+?>
 
