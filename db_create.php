@@ -24,14 +24,17 @@ $db = new PDO("sqlite:".$database);
 //Create table 
 $db->exec("CREATE TABLE IF NOT EXISTS cwcsqlite(
       id INTEGER PRIMARY KEY,
-	  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL UNIQUE,
+	  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       php_self TEXT,
       remote_addr TEXT,
       http_host TEXT,
       request_uri TEXT,
       http_referer TEXT,
       http_user_agent TEXT,
-      remote_host TEXT)");
+      remote_host TEXT,
+	  country TEXT,
+	  datime_txt TEXT,
+	  date_txt TEXT)");
 #timestamp TIMESTAMP DEFAULT (datetime('now','localtime')) NOT NULL UNIQUE,
 $db->close();
 echo date_default_timezone_get()."<br />";
